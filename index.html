@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Гримуар Белгардина</title>
+<meta name="description" content="Фанатская памятка по Shadow Raid Belgardin (Lost Ark): механики обоих врат в 3D, клипы атак, калькуляторы и награды.">
+<meta name="author" content="xSlowly">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700;800&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="css/style.css?v=6">
+</head>
+<body>
+
+<div class="ambient" aria-hidden="true">
+  <div class="amb-img" id="ambA"></div><div class="amb-img" id="ambB"></div>
+  <canvas id="ambFx"></canvas>
+  <div class="amb-fog"></div>
+</div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div class="flash" id="flash" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="wrap row">
+    <a class="brand" href="#top"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12" fill="none" stroke="#d4a85a" stroke-width="2"/><path d="M16 5v22M9 12h14" stroke="#d4a85a" stroke-width="2"/></svg><span>Гримуар</span></a>
+    <nav class="nav" id="nav">
+      <a href="#phases">Фазы</a><a href="#arena-sec">3D-арена</a><a href="#g1">Врата I</a><a href="#g2">Врата II</a><a href="#calc">Калькуляторы</a><a href="#loot">Награды</a><a href="#src">Источники</a>
+    </nav>
+    <a class="author" href="https://discord.com/users/346621596125102083" target="_blank" rel="noopener" title="Автор в Discord"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M20.3 4.4A19.6 19.6 0 0 0 15.4 3l-.6 1.3a18 18 0 0 0-5.6 0L8.6 3a19.6 19.6 0 0 0-4.9 1.4C.6 9 0 13.6.3 18.1a19.8 19.8 0 0 0 6 3l1.3-2a12.8 12.8 0 0 1-2-1l.5-.4a14 14 0 0 0 11.8 0l.5.4-2 1 1.3 2a19.7 19.7 0 0 0 6-3c.4-5.2-.7-9.7-3.1-13.7ZM8.5 15.4c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm7 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Z"/></svg><span>xSlowly</span></a>
+    <div class="diff" role="group" aria-label="Сложность">
+      <button data-d="N" aria-pressed="false">N</button>
+      <button data-d="H" aria-pressed="true">H</button>
+      <button data-d="NM" aria-pressed="false">NM</button>
+    </div>
+  </div>
+  <div class="bosshp" aria-hidden="true"><i id="hpFill" style="width:100%"></i><b id="hpTxt">×300</b></div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-art" id="heroArt" aria-hidden="true"><img src="img/boss/belgardin-hero.jpg?v=3" alt=""><span class="chest"></span><span class="eye"></span></div>
+  <canvas id="heroGL" aria-hidden="true"></canvas>
+  <div class="hero-shade" aria-hidden="true"></div>
+  <div class="wrap hero-in" id="heroIn">
+    <div class="eyebrow"><span>Shadow Raid</span><span>8 игроков</span><span>2 врат</span><span>KR · 5 авг 2026</span></div>
+    <h1 class="title" id="title" data-text="Belgardin">Belgardin</h1>
+    <div class="subtitle">the Arbiter of Death <small>죽음의 계율자, 벨가르딘</small></div>
+    <p class="hero-copy">Святой, ставший некромантом ради одной умершей. Гробы, клинки, четыре щупальца Phetus an Kragma и Holding Just Guard — всё, что нужно знать перед заходом, на одной странице.</p>
+    <div class="cta">
+      <a class="btn prime" href="#arena-sec">▶ Механики в 3D</a>
+      <a class="btn ghost" href="#g1">Врата I</a>
+      <a class="btn ghost" href="#g2">Врата II</a>
+    </div>
+    <div class="stats" id="heroStats">
+      <div><b>1770</b><span>iLvl · Hard</span></div>
+      <div><b>10:00</b><span>Энрейдж I</span></div>
+      <div><b>13:00</b><span>Энрейдж II</span></div>
+      <div><b>62 000</b><span>Золото · Hard</span></div>
+    </div>
+  </div>
+  <div class="scroll-cue" aria-hidden="true"><i></i></div>
+</section>
+
+<div class="marquee" aria-hidden="true"><div class="track" id="mq"></div></div>
+
+<main id="main">
+
+<!-- PHASES -->
+<section class="chapter wrap" id="phases" data-amb="img/boss/belgardin-blur.jpg">
+  <div class="chapter-head reveal">
+    <div class="kicker">Две фазы одного боя</div>
+    <h2>Святой снаружи, кузнец смерти внутри</h2>
+    <p class="lead">Врата I — Белгардин с гробами и клинками на кладбище Sanctuary of Holy Rest. Врата II — его истинная форма, Phetus an Kragma, на рушащейся арене над пустотой.</p>
+  </div>
+  <div class="phases">
+    <article class="portal reveal tilt" data-g="1">
+      <img class="art" src="img/boss/belgardin.jpg" alt="Belgardin — официальный арт">
+      <span class="gtag">Врата I · энрейдж 10:00</span>
+      <h3>Belgardin <span class="ko">벨가르딘</span></h3>
+      <p class="loc">Sanctuary of Holy Rest · Human · слабость Holy</p>
+      <div class="pstats"><span id="ph1hp">HP —</span><span>300 полосок</span><span>Seeping Chaos</span></div>
+      <ul class="threats"><li>Красные гробы: луч, на NM — мгновенная смерть</li><li>Double Swipe → Pizza: один безопасный кусок</li><li>Исчезновение → захват → всё кроме спины — смерть</li></ul>
+      <a class="btn sm" href="#g1">Механики врат I →</a>
+    </article>
+    <article class="portal reveal tilt" data-g="2">
+      <img class="art" src="img/boss/phetus.jpg" alt="Phetus an Kragma — официальный арт">
+      <span class="gtag">Врата II · энрейдж 13:00</span>
+      <h3>Phetus an Kragma <span class="ko">페투스 안 크라그마</span></h3>
+      <p class="loc">Kragma's Field of Annihilation · Ancient · слабость Holy</p>
+      <div class="pstats"><span id="ph2hp">HP —</span><span>300 полосок</span><span>Счётчик захватов</span></div>
+      <ul class="threats"><li>Обрывы весь бой, арена рушится на 240 и ~135</li><li>4 вида захватов: рогатка, «шампур», range, circle</li><li>Ритуал 360: объекты, контры фанатиков, «бильярд» сферами</li></ul>
+      <a class="btn sm" href="#g2">Механики врат II →</a>
+    </article>
+  </div>
+
+  <div class="sec reveal" style="margin-top:34px"><div class="facts" id="facts"></div></div>
+  <div class="sec reveal">
+    <h3 class="h3">HP и минимальный DPS</h3>
+    <div class="tbl-wrap"><table id="hpTable"></table></div>
+  </div>
+  <div class="sec reveal">
+    <h3 class="h3">Ориентиры по боеспособности</h3>
+    <div class="spec" id="spec"></div>
+    <p class="note">Цифры комьюнити KR (август 2026). NM — расчёт из HP при ~75% аптайма на 6 ДД; проверь себя в «Калькуляторы → Готовность».</p>
+  </div>
+  <div class="sec reveal">
+    <h3 class="h3">Системы рейда</h3>
+    <div class="grid" id="systems"></div>
+  </div>
+</section>
+
+<!-- ARENA -->
+<section class="chapter wrap" id="arena-sec" data-amb="img/boss/arena1-blur.jpg">
+  <div class="chapter-head reveal">
+    <div class="kicker">Живая схема</div>
+    <h2>Арена в 3D</h2>
+    <p class="lead">Все атаки и механики обоих врат (65 схем) — выбери в списке под ареной. Пол — циферблат: 12 часов — куда босс смотрит в начале. Тяни, чтобы крутить камеру; клик по игроку — «Я».</p>
+  </div>
+  <div class="stage reveal" id="stage">
+    <canvas id="arena" aria-label="3D-схема арены с механикой"></canvas>
+    <div class="hud">
+      <div class="hud-title"><span id="simGate">Врата I · Sanctuary of Holy Rest</span><b id="simName">—</b></div>
+      <div class="hud-btns">
+        <div class="seg" role="group" aria-label="Камера">
+          <button class="btn sm on" data-cam="orbit" type="button" title="Свободная (1)">Обзор</button>
+          <button class="btn sm" data-cam="top" type="button" title="Сверху (2)">Сверху</button>
+          <button class="btn sm" data-cam="iso" type="button" title="Изометрия (3)">Изо</button>
+          <button class="btn sm" data-cam="boss" type="button" title="Из-за босса (4)">Босс</button>
+          <button class="btn sm" data-cam="player" type="button" title="За игроком (5)">Игрок</button>
+          <button class="btn sm" data-cam="cine" type="button" title="Кино-облёт (6)">Кино</button>
+        </div>
+      </div>
+    </div>
+    <div class="caption" id="simCap">Загрузка арены…</div>
+    <div class="gauge" id="gauge" hidden><small id="gaugeLbl">Шкала</small><div class="gauge-bar"><i id="gaugeFill"></i></div></div>
+    <aside class="cmp" id="cmp" hidden><div class="cmp-h"><b>Как в игре</b><button class="x" id="cmpClose" type="button" aria-label="Скрыть">×</button></div><video id="cmpVid" muted loop playsinline></video><div class="cmp-nav" id="cmpNav"></div></aside>
+  </div>
+  <div class="ctrl">
+    <button class="btn" id="play" type="button">❚❚ Пауза</button>
+    <button class="btn" id="restart" type="button">↺ Заново</button>
+    <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Время механики">
+    <span class="num muted" id="tLbl">0.0 с</span>
+    <select id="speed" class="btn sm" aria-label="Скорость"><option value="0.25">×0.25</option><option value="0.5">×0.5</option><option value="1" selected>×1</option><option value="1.5">×1.5</option><option value="2">×2</option></select>
+  </div>
+  <div class="ctrl ctrl2">
+    <label class="tg"><input type="checkbox" id="tglLabels" checked> Подписи</label>
+    <label class="tg"><input type="checkbox" id="tglClock" checked> Циферблат</label>
+    <label class="tg">Я: <select id="meSel" class="btn sm"><option value="-1">—</option><option value="0">Д1</option><option value="1">Д2</option><option value="2">Д3</option><option value="3">С1</option><option value="4">Д4</option><option value="5">Д5</option><option value="6">Д6</option><option value="7">С2</option></select></label>
+    <button class="btn sm" id="btnCmp" type="button">🎬 Сравнить с игрой</button>
+    <button class="btn sm" id="btnShot" type="button">📷 Снимок</button>
+    <button class="btn sm" id="btnLink" type="button">🔗 Ссылка</button>
+    <button class="btn sm" id="btnFull" type="button">⛶ Во весь экран</button>
+  </div>
+  <div class="chip-group"><div class="chips" id="chipsG1"></div><div class="chips" id="chipsG2"></div></div>
+  <div class="legend">
+    <span><i style="background:var(--blood)"></i>Смерть / почти смерть</span><span><i style="background:var(--kd)"></i>Сбитие</span><span><i style="background:var(--stag)"></i>Стаггер</span><span><i style="background:var(--grab)"></i>Захват</span><span><i style="background:var(--jg)"></i>Just Guard</span><span><i style="background:var(--soul)"></i>Контра</span><span><i style="background:var(--safe)"></i>Безопасно</span>
+    <span class="keys">Клавиши: Пробел — пауза · ←/→ — ±0,5 с · [ ] — пред./след. · 1–6 — камера · F — экран</span>
+  </div>
+  <ol class="steps" id="steps"></ol>
+</section>
+
+<!-- GATE 1 -->
+<section class="chapter wrap" id="g1" data-amb="img/boss/arena1-blur.jpg">
+  <div class="chapter-head vhead reveal">
+    <video class="vbg" data-src="img/screens/coffinA-1.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <div class="kicker">Врата I · Sanctuary of Holy Rest · энрейдж 10:00</div>
+    <h2>Belgardin, the Arbiter of Death <span class="ko">죽음의 계율자, 벨가르딘</span></h2>
+    <p class="lead">Главные убийцы: красные гробы, «Double Swipe → Pizza», исчезновение с захватом и стаки Seeping Chaos на H/NM.</p>
+  </div>
+  <div class="sec reveal banners b3">
+    <figure><img class="banner" src="img/boss/arena1.jpg" alt="Арена врат I" loading="lazy"><figcaption>Sanctuary of Holy Rest — арена врат I</figcaption></figure>
+    <figure><img class="banner" src="img/boss/mech-3.jpg" alt="Гробы на арене" loading="lazy"><figcaption>Гробы и Белгардин — кадр из патчноута</figcaption></figure>
+    <figure><img class="banner" src="img/boss/mech-5.jpg" alt="Красный луч" loading="lazy"><figcaption>Красные лучи гробов</figcaption></figure>
+  </div>
+  <div class="gwrap" id="gw1">
+    <div class="sec reveal"><div class="rail" id="rail1"></div></div>
+    <div class="glayout"><div class="tl" id="tlG1"></div><aside class="gview" id="gv1"></aside></div>
+  </div>
+  <div class="sec">
+    <h3 class="h3">Все атаки</h3>
+    <div class="filters" data-for="g1">
+      <input type="search" placeholder="Поиск: гроб, JG, медуза…" aria-label="Поиск атак врат I">
+      <button class="btn sm on" data-f="all">Все</button><button class="btn sm" data-f="red">Смертельные</button><button class="btn sm" data-f="insight">Insight</button><button class="btn sm" data-f="normal">Обычные</button>
+    </div>
+    <div class="plist" id="listG1"></div>
+  </div>
+</section>
+
+<!-- GATE 2 -->
+<section class="chapter wrap" id="g2" data-amb="img/boss/phetus-blur.jpg">
+  <div class="chapter-head vhead reveal">
+    <video class="vbg" data-src="img/gimmicks/ritual-1.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <div class="kicker">Врата II · Kragma's Field of Annihilation · энрейдж 13:00</div>
+    <h2>Phetus an Kragma, the Forger of Death <span class="ko">죽음의 주조자, 페투스 안 크라그마</span></h2>
+    <p class="lead">Обрывы по краям (падение = смерть), ритуалы фанатиков и счётчик захватов под HP. NM-миссия: ≤2 захватов на весь отряд.</p>
+  </div>
+  <div class="sec reveal banners b3">
+    <figure><img class="banner" src="img/boss/phetus-arena.jpg" alt="Phetus an Kragma на ритуальном круге" loading="lazy"><figcaption>Phetus an Kragma на ритуальном круге</figcaption></figure>
+    <figure><img class="banner" src="img/boss/chaktum.jpg" alt="Chaktum" loading="lazy"><figcaption>Chaktum — аватар маски (с 300)</figcaption></figure>
+    <figure><img class="banner" src="img/boss/chaktum-field.jpg" alt="Красное поле" loading="lazy"><figcaption>Chaktum над красным полем</figcaption></figure>
+    <figure><img class="banner" src="img/boss/kragma-1.jpg" alt="Щупальца" loading="lazy"><figcaption>Щупальца Kragma</figcaption></figure>
+    <figure><img class="banner" src="img/boss/kragma-2.jpg" alt="Голубые сферы" loading="lazy"><figcaption>Сферы и удары</figcaption></figure>
+    <figure><img class="banner" src="img/boss/kragma-3.jpg" alt="Сфера в руке" loading="lazy"><figcaption>Сфера в руке Kragma</figcaption></figure>
+  </div>
+  <div class="gwrap" id="gw2">
+    <div class="sec reveal"><div class="rail" id="rail2"></div></div>
+    <div class="glayout"><div class="tl" id="tlG2"></div><aside class="gview" id="gv2"></aside></div>
+  </div>
+  <div class="sec">
+    <h3 class="h3">Атаки и захваты</h3>
+    <div class="filters" data-for="g2">
+      <input type="search" placeholder="Поиск: рогатка, стена, JG…" aria-label="Поиск атак врат II">
+      <button class="btn sm on" data-f="all">Все</button><button class="btn sm" data-f="grab">Захваты</button><button class="btn sm" data-f="normal">Обычные</button>
+    </div>
+    <div class="plist" id="listG2"></div>
+  </div>
+  <div class="sec reveal">
+    <h3 class="h3">Боевой предмет врат II</h3>
+    <div class="banners b2"><figure><img class="banner natural" src="img/boss/shadow-item.jpg" alt="Shadow of Phetus an Kragma" loading="lazy"><figcaption>«Shadow of Phetus an Kragma» — особый предмет для механик врат II</figcaption></figure>
+    <figure><img class="banner natural" src="img/boss/mech-4.jpg" alt="Лучи" loading="lazy"><figcaption>Кадр механик из патчноута</figcaption></figure></div>
+  </div>
+</section>
+
+<!-- CALC -->
+<section class="chapter wrap" id="calc" data-amb="img/boss/chaktum-blur.jpg">
+  <div class="chapter-head reveal">
+    <div class="kicker">Цифры</div>
+    <h2>Калькуляторы</h2>
+    <p class="lead">Сложность — из переключателя в шапке. Доля ДД считается от 6 дамагеров: 16.6% — ровно «одна доля», 15% — уверенно, 20% — топ.</p>
+  </div>
+  <div class="calcs">
+  <div class="calc wide reveal" id="cDps">
+    <h3>Доля урона и DPS</h3>
+    <div class="calc-split">
+      <div class="fields">
+        <label class="f">Врата<select id="dGate"><option value="0">I — Belgardin</option><option value="1">II — Phetus</option></select></label>
+        <label class="f">Бой, мин<input id="dMin" type="number" min="0" max="20" value="9"></label>
+        <label class="f">сек<input id="dSec" type="number" min="0" max="59" value="30"></label>
+        <label class="f">Мой урон<input id="dDmg" type="number" min="0" step="any" value="4200"></label>
+        <label class="f">Единица<select id="dUnit"><option value="1e8" selected>억 (100 млн)</option><option value="1e6">млн</option><option value="1e9">млрд</option><option value="1e12">조 / трлн</option></select></label>
+      </div>
+      <div style="display:grid;gap:10px">
+        <div class="out" id="dOut"></div>
+        <div class="meter" aria-hidden="true"><i id="dMeter"></i><u style="left:75%"></u><u style="left:83%"></u></div>
+      </div>
+    </div>
+    <div class="tbl-wrap"><table id="dTable"></table></div>
+  </div>
+  <div class="calc reveal" id="cRdy">
+    <h3>Готовность персонажа</h3>
+    <div class="fields">
+      <label class="f">Роль<select id="rRole"><option value="dd">Дамагер</option><option value="sup">Саппорт</option></select></label>
+      <label class="f">iLvl<input id="rIlvl" type="number" value="1772" step="1"></label>
+      <label class="f">Боеспособн.<input id="rCp" type="number" value="4300" step="10"></label>
+      <label class="f">DPS, млн/с<input id="rDps" type="number" value="780" step="10"></label>
+      <label class="f">Аптайм, %<input id="rUp" type="number" value="75" min="40" max="100"></label>
+    </div>
+    <div class="tbl-wrap"><table id="rTable"></table></div>
+    <p class="note">Нужный DPS = HP врат II ÷ (13 мин × аптайм) ÷ 6 ДД. Для саппорта DPS не учитывается.</p>
+  </div>
+  <div class="calc reveal" id="cPace">
+    <h3>Темп боя</h3>
+    <div class="fields">
+      <label class="f">Врата<select id="pGate"><option value="0">I — Belgardin</option><option value="1">II — Phetus</option></select></label>
+      <label class="f">Прошло, мин<input id="pMin" type="number" min="0" value="4"></label>
+      <label class="f">сек<input id="pSec" type="number" min="0" max="59" value="0"></label>
+      <label class="f">Полоска<input id="pBar" type="number" min="0" max="300" value="160"></label>
+    </div>
+    <div class="out" id="pOut"></div>
+    <p class="note">Прогноз линейный: Time Attack и ритуал 360 растягивают время сильнее, чем видно по первым минутам.</p>
+  </div>
+  </div>
+</section>
+
+<!-- LOOT -->
+<section class="chapter wrap" id="loot" data-amb="img/boss/chaktum-blur.jpg">
+  <div class="chapter-head reveal">
+    <div class="kicker">Добыча · <span class="dname"></span></div>
+    <h2>Награды и Vambrace</h2>
+    <p class="lead">Рейд делит лимит наград золотом и бесплатных «Ещё» с остальным эндгеймом. Попытка общая для всех сложностей — выход из рейда её сжигает.</p>
+  </div>
+  <div class="grid rw reveal" id="rwGates"></div>
+  <p class="note" id="rwNote" style="margin-top:10px"></p>
+  <p class="note">H/NM: Relic-ядро 9% → 14%, Ancient 1% → 2%; 69 ядер подряд без Ancient — 70-е гарантированно Ancient.</p>
+
+  <div class="sec reveal" style="margin-top:30px">
+    <h3 class="h3">Vambrace <span class="ko">완갑</span> — путь 1 → 25</h3>
+    <div class="vamb">
+      <div class="card vcard"><img src="img/boss/vamb-1.jpg" alt="Vambrace +10, тултип" loading="lazy"><div><h3>Получение</h3><p>Эпический Vambrace — за первое прохождение врат II на любой сложности. Даёт статы, iLvl не меняет.</p><div class="tier"><span style="background:#a77fe4"></span></div></div></div>
+      <div class="card vcard"><img src="img/boss/vamb-2.jpg" alt="Vambrace +15, тултип" loading="lazy"><div><h3>+10 · Legendary</h3><p>Прорыв: 200 Specter's Shadow (N) или 100 Hand of Death (H/NM).</p><div class="tier"><span style="background:#e4913d"></span></div></div></div>
+      <div class="card vcard"><img src="img/boss/vamb-3.jpg" alt="Vambrace +20, тултип" loading="lazy"><div><h3>+15 · Relic</h3><p>Прорыв: 240 Specter's Shadow или 120 Hand of Death.</p><div class="tier"><span style="background:#dc5841"></span></div></div></div>
+      <div class="card vcard"><img src="img/boss/vamb-4.jpg" alt="Vambrace +25, тултип" loading="lazy"><div><h3>+20 · Ancient</h3><p>Прорыв: 150 Hand of Death — только H и NM. Дальше до +25.</p><div class="tier"><span style="background:#e9d6ad"></span></div></div></div>
+    </div>
+    <p class="note">1 Hand of Death заменяет 2 Specter's Shadow на прорывах +10 и +15; если есть оба, сначала тратится Specter's Shadow. Обычная заточка: Silling, золото, Fate Fragment, Fate Destruction / Guardian Stone Crystal, Great Fate Leapstone, Superior Abidos Fusion Material.</p>
+  </div>
+
+  <div class="vplan reveal">
+    <div class="calc">
+      <h3>Планер прорыва Vambrace</h3>
+      <div class="fields">
+        <label class="f">Есть<input id="vHave" type="number" min="0" value="60"></label>
+        <label class="f">Нужно<input id="vNeed" type="number" min="1" value="100"></label>
+        <label class="f">Источник<select id="vDiff"><option value="N">N → Specter's Shadow</option><option value="H" selected>H/NM → Hand of Death</option></select></label>
+        <label class="f">«Ещё»<select id="vMore"><option value="1">Оба врата</option><option value="0">Нет</option></select></label>
+      </div>
+      <div class="out" id="vOut"></div>
+    </div>
+    <figure class="vui"><img src="img/boss/vambrace-ui.jpg" alt="Окно заточки Vambrace" loading="lazy"><figcaption>Окно заточки Vambrace</figcaption></figure>
+  </div>
+
+  <div class="sec reveal" style="margin-top:30px">
+    <h3 class="h3">Belgardin Conquest <span class="ko">벨가르딘 정복전</span> · закончилось 16 сентября</h3>
+    <div class="banners b2">
+      <figure><img class="banner natural" src="img/boss/conquest.jpg" alt="Баннер события" loading="lazy"><figcaption>Баннер события</figcaption></figure>
+      <figure><img class="banner natural" src="img/boss/titles.jpg" alt="Титулы" loading="lazy"><figcaption>Титулы «Bringer of Death» (죽음을 부르는 자) и «Croce» (크로체)</figcaption></figure>
+    </div>
+    <div class="tbl-wrap" style="margin-top:12px"><table>
+      <thead><tr><th>Миссия</th><th>Условие</th></tr></thead>
+      <tbody>
+        <tr><td>Clear Gate II</td><td>1 раз / всего 2 / всего 4 на сложности. Выше сложность засчитывает и ниже.</td></tr>
+        <tr><td>As Long As I Don't Die · I и II</td><td>Пройти врата без собственной смерти</td></tr>
+        <tr><td>Invincible Raid (N/H)</td><td>Весь рейд без перерыва и без смертей в отряде</td></tr>
+        <tr><td>No One Was Caught (NM)</td><td>Врата II: ≤2 захватов Kragma на весь отряд и никто не умер</td></tr>
+        <tr><td>Бонус</td><td>Ачивки «Head-On Collision», «You Shall Not Pass», «Not Enough Blood»</td></tr>
+        <tr><td>Титулы</td><td>5 из 6 NM-миссий → «Croce» + фон лаунжа; 6 из 6 → реликвийный «Bringer of Death»</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- LORE + SOURCES -->
+<section class="chapter wrap" id="src" data-amb="img/boss/belgardin-blur.jpg">
+  <div class="lore reveal">
+    <blockquote>«Мне неважно, сколько душ придётся собрать».<small>Мотив Белгардина в двух словах — пересказ, не цитата из игры.</small></blockquote>
+    <div style="display:grid;gap:14px">
+      <p>Belgardin Croce — святой из Sacrea. После гибели подруги детства Isabella ушёл в запретную некромантию и умер, так её и не вернув. Его тело стало оболочкой для одного из «существующих с начала времён» — но одержимость Белгардина поглотила сущность.</p>
+      <p>Во вторых вратах истинная форма — Phetus an Kragma — разрывает тело и переносит бой в Kragma's Field of Annihilation. После победы он всё же воскрешает Изабеллу и исчезает, почуяв в герое пламя бездны.</p>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="chapter-head reveal" style="margin-top:40px">
+    <div class="kicker">Откуда данные и картинки</div>
+    <h2>Источники</h2>
+    <p class="lead">Иконки предметов — с CDN игры и из базы Inven. Арты — из официального патчноута. Клипы атак — из гайдов Inven, клипы механик врат II — с Arca.live; всё пережато в MP4.</p>
+  </div>
+  <div class="src reveal">
+    <a href="https://www.inven.co.kr/board/lostark/4821/110616" target="_blank" rel="noopener">Inven · Врата I, все атаки с гифками<span>22 обычные, 2 Insight, 3 смертельные атаки</span></a>
+    <a href="https://www.inven.co.kr/board/lostark/4821/110652" target="_blank" rel="noopener">Inven · Врата II, все атаки с гифками<span>20 обычных атак и 4 захвата</span></a>
+    <a href="https://www.inven.co.kr/board/lostark/4821/110620" target="_blank" rel="noopener">Inven · Time Attack 195, схемы узоров<span>NM: шлепки, V, вафля, волны</span></a>
+    <a href="https://www.inven.co.kr/board/lostark/5343/153711" target="_blank" rel="noopener">Inven · NM врата I с видео и тайм-кодами<span>240, 195, 120, 3 клона, финал</span></a>
+    <a href="https://www.inven.co.kr/board/lostark/6271/3976005" target="_blank" rel="noopener">Inven · Большие механики Normal<span>75, 350, 315 со скриншотами</span></a>
+    <a href="https://arca.live/b/lostark/179073928" target="_blank" rel="noopener">Arca · механики врат II в клипах (Hard)<span>360, 320, 300, 280, 240, 195, Angry Bird</span></a>
+    <a href="https://arca.live/b/lostark/179011733" target="_blank" rel="noopener">Arca · шпаргалка по механикам<span>Порядок механик обоих врат</span></a>
+    <a href="https://www.inven.co.kr/board/lostark/4820/9611" target="_blank" rel="noopener">Inven · патчноут Belgardin<span>Официальные арты и награды</span></a>
+    <a href="https://www.lobal.kr/tips/raid/raid-boss-guide/belgardin" target="_blank" rel="noopener">Lobal · HP, пороги, награды<span>Таблица наград нормала</span></a>
+    <a href="https://loagg.com/raid" target="_blank" rel="noopener">LOAGG · выгода «Ещё награды»<span>H ~+19 тыс., NM ~+21 тыс. (окт. 2026)</span></a>
+    <a href="https://www.dogdrip.net/718069520" target="_blank" rel="noopener">Dogdrip · отзыв N/H с планками<span>Боеспособность и DPS для ДД и саппортов</span></a>
+    <a href="https://labs.invenglobal.com/articles/24462/defeat-belgardine-and-claim-the-vambrace-shadow-raid-update" target="_blank" rel="noopener">Inven Global · обзор патча (EN)<span>Вход, сохранение, Vambrace, миссии</span></a>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap foot">
+  <div class="foot-author">
+    <span class="kicker">Автор</span>
+    <a class="author big" href="https://discord.com/users/346621596125102083" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M20.3 4.4A19.6 19.6 0 0 0 15.4 3l-.6 1.3a18 18 0 0 0-5.6 0L8.6 3a19.6 19.6 0 0 0-4.9 1.4C.6 9 0 13.6.3 18.1a19.8 19.8 0 0 0 6 3l1.3-2a12.8 12.8 0 0 1-2-1l.5-.4a14 14 0 0 0 11.8 0l.5.4-2 1 1.3 2a19.7 19.7 0 0 0 6-3c.4-5.2-.7-9.7-3.1-13.7ZM8.5 15.4c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm7 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Z"/></svg>xSlowly · Discord</a>
+  </div>
+  <p>Фанатская памятка для личного использования. Lost Ark и все названия, арты и иконки принадлежат Smilegate RPG; клипы — авторам гайдов Inven и Arca.live. Данные: KR-сервер, август–октябрь 2026; цифры комьюнити — ориентиры. Английские названия атак — переводы с корейского, кроме официальных (Belgardin, Phetus an Kragma, Vambrace, Holding Just Guard). 3D-персонажи — модель Soldier из примеров three.js.</p>
+</footer>
+
+<div class="lb" id="lb" hidden><div class="lb-body"></div><button class="btn sm" type="button" aria-label="Закрыть">✕ Закрыть</button></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/SkeletonUtils.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="js/soldier-glb.js"></script>
+<script src="js/data.js?v=3"></script>
+<script src="js/app.js?v=4"></script>
+<script src="js/arena.js?v=9"></script>
+<script src="js/hero.js?v=3"></script>
+<script src="js/fx.js?v=2"></script>
+</body>
+</html>

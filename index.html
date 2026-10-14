@@ -8,7 +8,7 @@
 <meta name="author" content="xSlowly">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700;800&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
-<link rel="stylesheet" href="css/style.css?v=10">
+<link rel="stylesheet" href="css/style.css?v=11">
 </head>
 <body>
 
@@ -329,12 +329,13 @@
         <div class="vc-opt"><span class="kicker">Прорыв за</span><div class="seg2" data-k="src">
           <button type="button" data-v="H" class="on"><img src="img/items/hod.png" alt="">H/NM</button>
           <button type="button" data-v="N"><img src="img/items/sps.png" alt="">Normal</button></div></div>
+        <label class="vc-opt vc-chk"><span class="kicker">Сундуки «Ещё»</span><span class="chk"><input type="checkbox" id="vMore" checked><span>покупаю после каждых врат</span></span></label>
         <label class="vc-opt vc-have"><span class="kicker">Уже есть</span><span class="vc-hv"><img id="vHaveIco" src="img/items/hod.png" alt=""><input id="vHave" type="number" min="0" value="0" aria-label="Уже есть материалов на прорыв"></span></label>
       </div>
       <div class="vc-sum" id="vSum"></div>
       <div class="vc-mats" id="vMats"></div>
       <details class="vc-steps"><summary>По ступеням</summary><div class="tbl-wrap"><table id="vCostT"></table></div></details>
-      <p class="note">Как считается: шанс растёт на 10% от базового за каждый провал (максимум вдвое), «энергия мастера» копит 46,51% текущего шанса за провал и на 100% даёт гарантированный успех. Дыхания добавляют шанс до удвоения базового; Lava's и Glacier's дают одинаковый шанс. Модель совпадает с калькулятором loaup с Inven (+21 в среднем 32,36 попытки без дыханий и 21,57 с ними). Серебро и осколки включают разовое заполнение шкалы опыта ступени.</p>
+      <p class="note">Как считается: шанс растёт на 10% от базового за каждый провал (максимум вдвое), «энергия мастера» копит 46,51% текущего шанса за провал и на 100% даёт гарантированный успех. Дыхания добавляют шанс до удвоения базового; Lava's и Glacier's дают одинаковый шанс. Модель совпадает с калькулятором loaup с Inven (+21 в среднем 32,36 попытки без дыханий и 21,57 с ними). Серебро и осколки включают разовое заполнение шкалы опыта ступени. Материалы на прорыв за неделю: прохождение даёт 12 + 18 (врата I + II), сундуки «Ещё» — ещё столько же; с ними Hard выходит на +10 / +15 / +20 к 2-й / 4-й / 7-й неделе, без них — к 4-й / 8-й / 13-й (Inven).</p>
     </div>
     <div class="vside">
       <figure class="vui"><img src="img/boss/vambrace-ui.jpg" alt="Окно заточки Vambrace" loading="lazy"><figcaption>Окно заточки Vambrace</figcaption></figure>
@@ -421,8 +422,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/soldier-glb.js"></script>
-<script src="js/data.js?v=4"></script>
-<script src="js/app.js?v=6"></script>
+<script src="js/data.js?v=5"></script>
+<script src="js/app.js?v=8"></script>
 <script src="js/arena.js?v=9"></script>
 <script src="js/hero.js?v=3"></script>
 <script src="js/fx.js?v=2"></script>

@@ -26,11 +26,11 @@ const RW={
   N:[{clear:[['fdc',405],['fgc',810],['ff',9100],['gfl',8],['rsb',3],['gas',10],['sps',12],['core',3]],more:[['fdc',860],['fgc',1720],['ff',19000],['gfl',36],['rsb',3],['gas',10],['sps',12]]},
      {clear:[['fdc',500],['fgc',1000],['ff',11000],['gfl',12],['rsb',4],['gas',10],['tl',6],['sof',10],['sps',18],['core',3]],more:[['fdc',1430],['fgc',2860],['ff',32200],['gfl',60],['rsb',4],['gas',10],['tl',5],['sps',18]]}],
   /* H/NM: clear = official notice + Namu (gold, Hand of Death, cores) and the patch note's new 전율 honing books (drop, no fixed count);
-     «Ещё» = LOAGG reward table (their Normal entry matches the Lobal numbers above). Fate Fragment is in «Ещё» too, count not published. */
-  H:[{clear:[['hod',12],['core',3],['book','шанс']],more:[['fdc',1130],['fgc',2260],['gfl',43],['ff','?']]},
-     {clear:[['hod',18],['core',3],['book','шанс']],more:[['fdc',1720],['fgc',3440],['gfl',72],['tl',6],['ff','?']]}],
-  NM:[{clear:[['hod',12],['core',4],['book','шанс']],more:[['fdc',1300],['fgc',2600],['gfl',49],['ff','?']]},
-      {clear:[['hod',18],['core',4],['book','шанс']],more:[['fdc',1980],['fgc',3960],['gfl',83],['tl',7],['ff','?']]}]
+     «Ещё» Hand of Death 12/18 = Inven webzine 319216 timeline (H/NM +10/+15/+20 at weeks 2/4/7 with «Ещё», 4/8/13 without); other «Ещё» = LOAGG reward table (their Normal entry matches the Lobal numbers above). Fate Fragment is in «Ещё» too, count not published. */
+  H:[{clear:[['hod',12],['core',3],['book','шанс']],more:[['hod',12],['fdc',1130],['fgc',2260],['gfl',43],['ff','?']]},
+     {clear:[['hod',18],['core',3],['book','шанс']],more:[['hod',18],['fdc',1720],['fgc',3440],['gfl',72],['tl',6],['ff','?']]}],
+  NM:[{clear:[['hod',12],['core',4],['book','шанс']],more:[['hod',12],['fdc',1300],['fgc',2600],['gfl',49],['ff','?']]},
+      {clear:[['hod',18],['core',4],['book','шанс']],more:[['hod',18],['fdc',1980],['fgc',3960],['gfl',83],['tl',7],['ff','?']]}]
 };
 
 /* ---- HP-bar gimmicks. Sources: Inven 110620 (195), Inven 5343/153711 (NM run + video timestamps), Inven 6271/3976005 (Normal), Arca 179011733 (cheat sheet), Arca 179073928 (gate II clips) ---- */

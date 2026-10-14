@@ -154,7 +154,7 @@ function renderRewards(){
     <div class="kicker">За прохождение</div><div class="items">${itemRow('gold',gold)}${r.clear.map(([k,q])=>itemRow(k,q)).join('')}</div>
     ${r.more?`<div class="kicker">«Ещё награда»</div><div class="items">${r.more.map(([k,q])=>itemRow(k,q)).join('')}</div>`:''}</div>`}).join('');
   $('#rwNote').textContent=D=='N'?'Нормал: полный список с прохождения и «Ещё» (данные Lobal). На матчинге (1750) половина золота — привязанная: 10 000 + 10 000 и 15 000 + 15 000.':
-   (D=='H'?'Hard':'Nightmare')+': золото, Hand of Death и ядра — из патчноута; книги «Трепет» выпадают с шансом (только H/NM, для заточки оружия и брони, не Vambrace). «Ещё»: кристаллы, Great Fate Leapstone и Transfer Leapstone — по таблице LOAGG; Fate Fragment там тоже есть, но количество не опубликовано («?»). Полный список — в игре, кнопка «Gate Info». По рынку октября 2026 «Ещё» на '+(D=='H'?'H окупается примерно на +19 тыс.':'NM окупается примерно на +21 тыс.')+' (если материалы нужны персонажу).';
+   (D=='H'?'Hard':'Nightmare')+': золото, Hand of Death и ядра — из патчноута; книги «Трепет» выпадают с шансом (только H/NM, для заточки оружия и брони, не Vambrace). «Ещё»: Hand of Death 12 / 18 (как в прохождении — по срокам Vambrace из статьи Inven), кристаллы, Great Fate Leapstone и Transfer Leapstone — по таблице LOAGG; Fate Fragment там тоже есть, но количество не опубликовано («?»). Полный список — в игре, кнопка «Gate Info». По рынку октября 2026 «Ещё» на '+(D=='H'?'H окупается примерно на +19 тыс.':'NM окупается примерно на +21 тыс.')+' (если материалы нужны персонажу).';
   renderVambInfo();vSlider();}
 /* ================= Vambrace: damage + honing ================= */
 const VART=1/2.15; // artisan's energy per fail = 46.51% of the tap's total rate
@@ -169,6 +169,7 @@ function renderVambInfo(){
     return `<div class="vbar" title="+${n-1} → +${n}: +${pc}% БС, ~${fmt(g/1e3)} тыс. золота за 1%" style="--c:${c}"><b style="bottom:calc(${h}% + 16px)">${pc}</b><i style="height:${h}%"></i><span>${n}</span></div>`;}).join('');
 }
 const VS={br:'0',luck:'avg',src:'H'};
+const plural=(n,one,few,many)=>{const m=n%10,h=n%100;return m==1&&h!=11?one:m>=2&&m<=4&&(h<12||h>14)?few:many;};
 const MAT=[['ff','Fate Fragment','#e8d7b4'],['fdc','Fate Destruction Stone Crystal','#ff8b6b'],['fgc','Fate Guardian Stone Crystal','#8fb9ff'],['gfl','Great Fate Leapstone','#c49bff'],['abidos','Superior Abidos Fusion Material','#ffc061'],['gold','Золото','#e6c27c'],['silver','Серебро (Silling)','#cfd3dc'],['glacier',"Glacier's Breath",'#7ad0ff'],['lava',"Lava's Breath",'#ff7a4a']];
 const GRADE_AT=n=>n<=10?'#a77fe4':n<=15?'#e4913d':n<=20?'#dc5841':'#e9d6ad';
 const BAND_C=['#66d29e','#d8c35c','#e4913d','#dc5841','#ff5a7a'];
@@ -198,13 +199,13 @@ function calcVamb(){
   }
   const bkTxt=[];let need=0,bad=false;
   [10,15,20].forEach(L=>{if(from<=L&&to>L){const [ss,hd]=VB_BREAK[L];if(src=='N'){if(ss){need+=ss;bkTxt.push(`+${L}: ${ss}`);}else bad=true;}else{need+=hd;bkTxt.push(`+${L}: ${hd}`);}}});
-  const per=src=='N'?60:30,left=Math.max(0,need-have),weeks=Math.ceil(left/per),bk=src=='N'?'sps':'hod';
+  const more=$('#vMore').checked,per=30*(more?2:1),left=Math.max(0,need-have),weeks=Math.ceil(left/per),bk=src=='N'?'sps':'hod';
   $('#vHaveIco').src='img/items/'+bk+'.png';
   const cp=cpAt(to)-cpAt(from);
   $('#vSum').innerHTML=`<div style="--c:#e9d6ad"><b>${luck=='avg'?T.taps.toFixed(1):T.taps}</b><span>попыток всего</span></div>
     <div style="--c:#d4a85a"><b>+${cp.toFixed(1)}%</b><span>БС ≈ урона <small>(полная экипировка)</small></span></div>
     <div style="--c:${bad?'#dc5841':'#ffb3a0'}"><b>${bad?'нельзя':need?ico(bk)+' '+fmt(need):'—'}</b><span>${bad?'прорыв +20 — только Hand of Death (H/NM)':need?'на прорыв · '+bkTxt.join(', '):'прорыв не нужен'}</span></div>
-    <div style="--c:#8fd3bf"><b>${need&&!bad?weeks:'—'}</b><span>недель фарма на прорыв <small>(${per}/нед)</small></span></div>`;
+    <div style="--c:#8fd3bf"><b>${need&&!bad?weeks:'—'}</b><span>${need&&!bad?plural(weeks,'неделя','недели','недель'):'недель'} фарма на прорыв <small>(${per}/нед: прохождение 30${more?' + «Ещё» 30':''})</small></span></div>`;
   $('#vSum').querySelectorAll('b img').forEach(i=>{i.style.cssText='width:24px;height:24px;vertical-align:-4px;border-radius:5px';});
   $('#vMats').innerHTML=MAT.map(([k,nm,c])=>{const val=T[k]||0;if((k=='lava'||k=='glacier')&&!val)return '';return `<div class="mchip" style="--c:${c}" title="${nm}: ${fmt(val)}">${ico(k,nm)}<b>${k=='silver'||k=='ff'||k=='gold'?short(val):fmt(val)}</b></div>`;}).join('');
   $('#vCostT').innerHTML=`<thead><tr><th>Ступень</th><th class="n">Шанс</th><th class="n">Попыток</th><th class="n">Гарант</th><th class="n">${ico('gold','Золото')}</th><th class="n">${ico('ff','Fate Fragment')}</th><th class="n">${ico('fdc','Destruction Crystal')}</th><th class="n">${ico('fgc','Guardian Crystal')}</th><th class="n">${ico('gfl','Great Fate Leapstone')}</th><th class="n">${ico('abidos','Abidos')}</th></tr></thead><tbody>${rows.join('')}</tbody>`;
@@ -240,6 +241,6 @@ renderList($('#listG1'),P1,1);renderList($('#listG2'),P2,2);bindFilters();
 ['dGate','dMin','dSec','dDmg','dUnit'].forEach(id=>$('#'+id).addEventListener('input',calcDps));
 ['rRole','rIlvl','rCp','rDps','rUp'].forEach(id=>$('#'+id).addEventListener('input',calcRdy));
 ['pGate','pMin','pSec','pBar'].forEach(id=>$('#'+id).addEventListener('input',calcPace));
-['vFrom','vTo'].forEach(id=>$('#'+id).addEventListener('input',vSlider));$('#vHave').addEventListener('input',calcVamb);
+['vFrom','vTo'].forEach(id=>$('#'+id).addEventListener('input',vSlider));$('#vHave').addEventListener('input',calcVamb);$('#vMore').addEventListener('change',calcVamb);
 setDiff(D);onScroll();
 })();

@@ -44,7 +44,7 @@ const GLD={N:50000,H:62000,NM:75000};
 function renderOverview(){
   $$('.dname').forEach(e=>e.textContent=DN[D]);
   $('#facts').innerHTML=[
-    ['Вход iLvl',ILVL[D]],['Игроков','8'],['Врат','2'],['Энрейдж','10:00 / 13:00','wide'],
+    ['Вход GS',ILVL[D]],['Игроков','8'],['Врат','2'],['Энрейдж','10:00 / 13:00','wide'],
     ['Золото',fmt(GOLD[D][0][0]+GOLD[D][1][0])],['Ядра Ark Grid',CORES[D]+' + '+CORES[D]],
     ['Vambrace',(D=='N'?'Specter ×30':'Hand of Death ×30'),'wide'],['Слабость','Holy']
   ].map(([a,b,c])=>`<div class="${c||''}" title="${esc(a)}: ${esc(b)}"><span>${a}</span><b>${b}</b></div>`).join('');
@@ -53,9 +53,9 @@ function renderOverview(){
   const nmDps=big(HP.NM[1]/(780*.75)/6)+'/с';
   const SP=[{d:'N',c:'#8fd3bf',il:1750,cp:'3300+',set:'3800–4200',dps:'~600 млн/с',sup:'3000+',f:.62},
             {d:'H',c:'#d4a85a',il:1770,cp:'4500+',set:'4600–5200',dps:'800 млн+/с',sup:'4000+',f:.82},
-            {d:'NM',c:'#dc5841',il:1780,cp:'нет данных',set:'нет данных',dps:'≈'+nmDps+' (расчёт)',sup:'нет данных',f:1}];
-  $('#spec').innerHTML=SP.map(s=>`<article class="sc ${s.d==D?'sel':''}" style="--c:${s.c}"><div class="sc-h"><b>${DN[s.d]}</b><span>${s.d}</span></div><div class="sc-il">${s.il}<small>ILVL</small></div>
-    <dl><div><dt>ДД: хватает</dt><dd>${s.cp}</dd></div><div><dt>ДД: типичный набор</dt><dd>${s.set}</dd></div><div><dt>ДД: DPS ориентир</dt><dd>${s.dps}</dd></div><div><dt>Саппорт</dt><dd>${s.sup}</dd></div><span class="bar"><i style="width:${s.f*100}%"></i></span></dl></article>`).join('');
+            {d:'NM',c:'#dc5841',il:1780,cp:'~6 500+ (оценка)',set:'7 000–7 500+',dps:'≈'+nmDps+' (расчёт)',sup:'~5 500+ (оценка)',f:1}];
+  $('#spec').innerHTML=SP.map(s=>`<article class="sc ${s.d==D?'sel':''}" style="--c:${s.c}"><div class="sc-h"><b>${DN[s.d]}</b><span>${s.d}</span></div><div class="sc-il">${s.il}<small>GS</small></div>
+    <dl><div><dt>ДД: БС хватает</dt><dd>${s.cp}</dd></div><div><dt>ДД: типичный набор</dt><dd>${s.set}</dd></div><div><dt>ДД: DPS ориентир</dt><dd>${s.dps}</dd></div><div><dt>Саппорт: БС</dt><dd>${s.sup}</dd></div><span class="bar"><i style="width:${s.f*100}%"></i></span></dl></article>`).join('');
   const sys=[
     ['Holding Just Guard','홀딩 저스트 가드','Новая система. Зажать guard и держать всю серию ударов. Успех — немного урона и гарантированное окно для отряда. Только выдержавшие весь Holding могут взять следующий обычный JG.'],
     ['Insight (Space)','통찰 · 간파','Глитч экрана = скоро Insight. Пробел в нужный момент переносит внутрь, где делается кооп-контра или Holding JG. На N/H подсказка — красная вспышка глаз, на NM — только по анимации.'],
@@ -67,7 +67,7 @@ function renderOverview(){
     ['Сохранение и воскрешения','관문 저장 · 부활','Прогресс по вратам сохраняется. Воскрешения — общий пул отряда. Попытки общие для N/H/NM.']];
   $('#systems').innerHTML=sys.map(([a,k,t])=>`<div class="card"><h3>${a} <span class="ko">${k}</span></h3><p>${t}</p></div>`).join('');
   $('#ph1hp').textContent='HP '+big(HP[D][0]);$('#ph2hp').textContent='HP '+big(HP[D][1]);
-  const st=$$('#heroStats div');st[0].querySelector('b').textContent=ILVL[D];st[0].querySelector('span').textContent='iLvl · '+DN[D];
+  const st=$$('#heroStats div');st[0].querySelector('b').textContent=ILVL[D];st[0].querySelector('span').textContent='GS · '+DN[D];
   st[3].querySelector('b').textContent=GLD[D].toLocaleString('ru-RU');st[3].querySelector('span').textContent='Золото · '+DN[D];
 }
 
@@ -133,8 +133,8 @@ function calcDps(){
   $('#dTable').innerHTML=`<thead><tr><th>Порог</th><th class="n">Урон</th><th class="n">в 억</th><th class="n">DPS при ${mmss(t)}</th></tr></thead><tbody>${[[.15,'Уверенно 15%'],[.166,'1 доля 16.6%'],[.20,'Топ 20%']].map(([p,n])=>`<tr><td>${n}</td><td class="n">${big(hp*p)}</td><td class="n">${fmt(hp*p/1e8)}</td><td class="n">${t?big(hp*p/t):'—'}</td></tr>`).join('')}</tbody>`;}
 function calcRdy(){
   const role=$('#rRole').value,il=v('rIlvl'),cp=v('rCp'),dps=v('rDps')*1e6,up=Math.max(.4,v('rUp')/100);
-  const CP={dd:{N:[3300,3800],H:[4500,4800],NM:null},sup:{N:[3000,3300],H:[4000,4300],NM:null}};
-  $('#rTable').innerHTML=`<thead><tr><th>Сложн.</th><th>iLvl</th><th>Боеспособность</th><th class="n">Нужный DPS (врата II)</th><th>Итог</th></tr></thead><tbody>${['N','H','NM'].map(d=>{
+  const CP={dd:{N:[3300,3800],H:[4500,4800],NM:[6500,7000]},sup:{N:[3000,3300],H:[4000,4300],NM:[5500,5800]}};
+  $('#rTable').innerHTML=`<thead><tr><th>Сложн.</th><th>GS</th><th>Боеспособность (БС)</th><th class="n">Нужный DPS (врата II)</th><th>Итог</th></tr></thead><tbody>${['N','H','NM'].map(d=>{
     const need=HP[d][1]/(780*up)/6,ilOk=il>=ILVL[d],c=CP[role][d];let cpS,cpL;
     if(!c){cpS='p-warn';cpL='нет данных';}else if(cp>=c[1]){cpS='p-ok';cpL='комфортно';}else if(cp>=c[0]){cpS='p-ok';cpL='хватает';}else if(cp>=c[0]*.92){cpS='p-warn';cpL='впритык';}else{cpS='p-bad';cpL='мало';}
     let dpsL='',score=0;if(role=='dd'){const r=dps/need;dpsL=` · у тебя ${Math.round(r*100)}%`;score=r>=1.1?2:r>=.95?1:0;}else{score=cpS=='p-ok'?2:cpS=='p-warn'?1:0;}
@@ -155,9 +155,62 @@ function renderRewards(){
     ${r.more?`<div class="kicker">«Ещё награда»</div><div class="items">${r.more.map(([k,q])=>itemRow(k,q)).join('')}</div>`:''}</div>`}).join('');
   $('#rwNote').textContent=D=='N'?'Нормал: полный список с прохождения и «Ещё» (данные Lobal). На матчинге (1750) половина золота — привязанная: 10 000 + 10 000 и 15 000 + 15 000.':
    (D=='H'?'Hard':'Nightmare')+': золото, Hand of Death и ядра — из патчноута; книги «Трепет» выпадают с шансом (только H/NM, для заточки оружия и брони, не Vambrace). «Ещё»: кристаллы, Great Fate Leapstone и Transfer Leapstone — по таблице LOAGG; Fate Fragment там тоже есть, но количество не опубликовано («?»). Полный список — в игре, кнопка «Gate Info». По рынку октября 2026 «Ещё» на '+(D=='H'?'H окупается примерно на +19 тыс.':'NM окупается примерно на +21 тыс.')+' (если материалы нужны персонажу).';
-  calcVamb();}
-function calcVamb(){const have=v('vHave'),need=v('vNeed'),d=$('#vDiff').value,more=v('vMore');const per=30+(more&&d=='N'?30:0);const left=Math.max(0,need-have),w=Math.ceil(left/per);
-  $('#vOut').innerHTML=`<div><b>${fmt(left)}</b><span>не хватает</span></div><div><b>${per}</b><span>в неделю${d!='N'&&more?' (у «Ещё» на H/NM Hand of Death не подтверждён)':''}</span></div><div><b>${w}</b><span>недель до прорыва</span></div>`;}
+  renderVambInfo();vSlider();}
+/* ================= Vambrace: damage + honing ================= */
+const VART=1/2.15; // artisan's energy per fail = 46.51% of the tap's total rate
+function vStage(p0,g){let art=0,reach=1,E=0,EG=0,k=1;for(;;){if(art>=1-1e-9){E+=reach;return{E,EG,M:k};}const p=Math.min(1,p0+g+Math.min(p0,p0*.1*(k-1)));E+=reach;EG+=reach;reach*=(1-p);art+=p*VART;k++;if(reach<1e-12)return{E,EG,M:k};}}
+const VCP_PTS=[[0,0],[10,VB_CP[10]],[15,VB_CP[15]],[20,VB_CP[20]],[25,VB_CP[25]]];
+function cpAt(n){for(let i=1;i<VCP_PTS.length;i++){const [a,va]=VCP_PTS[i-1],[b,vb]=VCP_PTS[i];if(n<=b)return va+(vb-va)*(n-a)/(b-a);}return VB_CP[25];}
+const VGRADE_C={'Эпик':'#a77fe4','Легенда':'#e4913d','Реликт':'#dc5841','Древний':'#e9d6ad'};
+function renderVambInfo(){
+  $('#vStatT').innerHTML=`<thead><tr><th>Заточка</th><th>Грейд</th><th class="n">Атака оружия</th><th class="n">Сила / Ловк. / Инт.</th><th class="n">Выносл.</th><th class="n">Защита</th><th class="n">Базовая атака</th><th class="n">Рост БС</th></tr></thead><tbody>${VB_STAT.map(s=>`<tr><td class="num">+${s.lv}</td><td><span class="pill" style="color:${VGRADE_C[s.g]};background:color-mix(in srgb,${VGRADE_C[s.g]} 16%,transparent)">${s.g}</span></td><td class="n">${fmt(s.wa)}</td><td class="n">${fmt(s.main)}</td><td class="n">${fmt(s.vit)}</td><td class="n">${fmt(s.def)}</td><td class="n">${s.ba?fmt(s.ba):'—'}${s.bap?` <b>+${s.bap}%</b>`:''}</td><td class="n">${VB_CP[s.lv]?'<b>+'+VB_CP[s.lv].toFixed(2)+'%</b>':'—'}</td></tr>`).join('')}</tbody>`;
+  const mx=Math.max(...Object.values(VB_STEP).map(v=>v[0]));
+  $('#vBars').innerHTML=Object.entries(VB_STEP).map(([n,[pc,g]])=>{const c=n<=15?'#e4913d':n<=20?'#dc5841':'#e9d6ad';const h=pc/mx*100;
+    return `<div class="vbar" title="+${n-1} → +${n}: +${pc}% БС, ~${fmt(g/1e3)} тыс. золота за 1%" style="--c:${c}"><b style="bottom:calc(${h}% + 16px)">${pc}</b><i style="height:${h}%"></i><span>${n}</span></div>`;}).join('');
+}
+const VS={br:'0',luck:'avg',src:'H'};
+const MAT=[['ff','Fate Fragment','#e8d7b4'],['fdc','Fate Destruction Stone Crystal','#ff8b6b'],['fgc','Fate Guardian Stone Crystal','#8fb9ff'],['gfl','Great Fate Leapstone','#c49bff'],['abidos','Superior Abidos Fusion Material','#ffc061'],['gold','Золото','#e6c27c'],['silver','Серебро (Silling)','#cfd3dc'],['glacier',"Glacier's Breath",'#7ad0ff'],['lava',"Lava's Breath",'#ff7a4a']];
+const GRADE_AT=n=>n<=10?'#a77fe4':n<=15?'#e4913d':n<=20?'#dc5841':'#e9d6ad';
+const BAND_C=['#66d29e','#d8c35c','#e4913d','#dc5841','#ff5a7a'];
+const ico=(k,t)=>`<img src="img/items/${k}.png" alt="${t||''}" title="${t||''}">`;
+const short=n=>n>=1e6?fmt(n/1e6,n>=1e7?0:1)+' млн':fmt(n);
+function vSlider(e){
+  const f=$('#vFrom'),t=$('#vTo');let a=+f.value,b=+t.value;
+  if(a>=b){if(e&&e.target===f){a=Math.min(a,24);b=a+1;}else{b=Math.max(b,1);a=b-1;}f.value=a;t.value=b;}
+  const tr=$('.dual-track'),w=tr.clientWidth||1,L=a/25*w,W=(b-a)/25*w,fill=$('#vFill');
+  fill.style.left=L+'px';fill.style.width=W+'px';
+  fill.style.background=`linear-gradient(90deg,#a77fe4 0 40%,#e4913d 40% 60%,#dc5841 60% 80%,#e9d6ad 80%) ${-L}px 0/${w}px 100% no-repeat`;
+  const lbl=$('#vRangeLbl');lbl.textContent=`+${a} → +${b}`;lbl.style.setProperty('--c1',GRADE_AT(a||1));lbl.style.setProperty('--c2',GRADE_AT(b));
+  f.style.zIndex=a>20?3:2;t.style.zIndex=a>20?2:3;
+  calcVamb();
+}
+function calcVamb(){
+  const from=+$('#vFrom').value,to=+$('#vTo').value,{br,luck,src}=VS,have=v('vHave');
+  const T={taps:0,gold:0,silver:0,ff:0,fdc:0,fgc:0,gfl:0,abidos:0,lava:0,glacier:0};const rows=[];
+  for(let n=from+1;n<=to;n++){
+    const [p0,ush,usi,sh,dsc,gsc,lp,ab,gold,sil]=VB[n-1],band=Math.floor((n-1)/5),perType=VB_BREATH[band];
+    const g=br=='2'?p0:br=='g'?p0/2:0,st=vStage(p0,g);
+    const taps=luck=='best'?1:luck=='worst'?st.M:st.E,grace=luck=='best'?1:luck=='worst'?st.M-1:st.EG;
+    T.taps+=taps;T.gold+=gold*taps;T.silver+=usi+sil*taps;T.ff+=ush+sh*taps;T.fdc+=dsc*taps;T.fgc+=gsc*taps;T.gfl+=lp*taps;T.abidos+=ab*taps;
+    if(br!='0'){T.glacier+=perType*grace;if(br=='2')T.lava+=perType*grace;}
+    const bc=BAND_C[band];
+    rows.push(`<tr><td class="st" style="--c:${GRADE_AT(n)}">+${n-1}→+${n}</td><td class="n ch" style="--c:${bc}">${(p0*100).toFixed(1)}%${g?`<span class="muted"> → ${((p0+g)*100).toFixed(1)}%</span>`:''}</td><td class="n">${taps.toFixed(luck=='avg'?1:0)}</td><td class="n muted">${st.M}</td><td class="n" data-c style="--c:#e6c27c">${short(gold*taps)}</td><td class="n" data-c style="--c:#e8d7b4">${short(ush+sh*taps)}</td><td class="n" data-c style="--c:#ff8b6b">${short(dsc*taps)}</td><td class="n" data-c style="--c:#8fb9ff">${short(gsc*taps)}</td><td class="n" data-c style="--c:#c49bff">${fmt(lp*taps)}</td><td class="n" data-c style="--c:#ffc061">${fmt(ab*taps)}</td></tr>`);
+  }
+  const bkTxt=[];let need=0,bad=false;
+  [10,15,20].forEach(L=>{if(from<=L&&to>L){const [ss,hd]=VB_BREAK[L];if(src=='N'){if(ss){need+=ss;bkTxt.push(`+${L}: ${ss}`);}else bad=true;}else{need+=hd;bkTxt.push(`+${L}: ${hd}`);}}});
+  const per=src=='N'?60:30,left=Math.max(0,need-have),weeks=Math.ceil(left/per),bk=src=='N'?'sps':'hod';
+  $('#vHaveIco').src='img/items/'+bk+'.png';
+  const cp=cpAt(to)-cpAt(from);
+  $('#vSum').innerHTML=`<div style="--c:#e9d6ad"><b>${luck=='avg'?T.taps.toFixed(1):T.taps}</b><span>попыток всего</span></div>
+    <div style="--c:#d4a85a"><b>+${cp.toFixed(1)}%</b><span>БС ≈ урона <small>(полная экипировка)</small></span></div>
+    <div style="--c:${bad?'#dc5841':'#ffb3a0'}"><b>${bad?'нельзя':need?ico(bk)+' '+fmt(need):'—'}</b><span>${bad?'прорыв +20 — только Hand of Death (H/NM)':need?'на прорыв · '+bkTxt.join(', '):'прорыв не нужен'}</span></div>
+    <div style="--c:#8fd3bf"><b>${need&&!bad?weeks:'—'}</b><span>недель фарма на прорыв <small>(${per}/нед)</small></span></div>`;
+  $('#vSum').querySelectorAll('b img').forEach(i=>{i.style.cssText='width:24px;height:24px;vertical-align:-4px;border-radius:5px';});
+  $('#vMats').innerHTML=MAT.map(([k,nm,c])=>{const val=T[k]||0;if((k=='lava'||k=='glacier')&&!val)return '';return `<div class="mchip" style="--c:${c}" title="${nm}: ${fmt(val)}">${ico(k,nm)}<b>${k=='silver'||k=='ff'||k=='gold'?short(val):fmt(val)}</b></div>`;}).join('');
+  $('#vCostT').innerHTML=`<thead><tr><th>Ступень</th><th class="n">Шанс</th><th class="n">Попыток</th><th class="n">Гарант</th><th class="n">${ico('gold','Золото')}</th><th class="n">${ico('ff','Fate Fragment')}</th><th class="n">${ico('fdc','Destruction Crystal')}</th><th class="n">${ico('fgc','Guardian Crystal')}</th><th class="n">${ico('gfl','Great Fate Leapstone')}</th><th class="n">${ico('abidos','Abidos')}</th></tr></thead><tbody>${rows.join('')}</tbody>`;
+}
+$$('.seg2').forEach(sg=>sg.querySelectorAll('button').forEach(b=>b.onclick=()=>{VS[sg.dataset.k]=b.dataset.v;sg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x==b));calcVamb();}));
+addEventListener('resize',()=>vSlider());
 
 /* ================= marquee, scroll HP, scrollspy ================= */
 const MQ=[['Red Coffin Lasers','레이저'],['Double Swipe → Pizza','휘릭 두번 후 피자안전'],['Medusa','메두사'],['Holding Just Guard','홀딩 저스트 가드'],['Slingshot','새총'],['Annihilation Barrage','소멸 난사'],['Circle Grab','원형 잡기'],['Ritual Disruption','의식 저지'],['Resonance','공명'],['Time Attack','타임어택'],['Blade Insight','칼 간파'],['Vanish Grab','잡기 - 후방안전']];
@@ -187,6 +240,6 @@ renderList($('#listG1'),P1,1);renderList($('#listG2'),P2,2);bindFilters();
 ['dGate','dMin','dSec','dDmg','dUnit'].forEach(id=>$('#'+id).addEventListener('input',calcDps));
 ['rRole','rIlvl','rCp','rDps','rUp'].forEach(id=>$('#'+id).addEventListener('input',calcRdy));
 ['pGate','pMin','pSec','pBar'].forEach(id=>$('#'+id).addEventListener('input',calcPace));
-['vHave','vNeed','vDiff','vMore'].forEach(id=>$('#'+id).addEventListener('input',calcVamb));
+['vFrom','vTo'].forEach(id=>$('#'+id).addEventListener('input',vSlider));$('#vHave').addEventListener('input',calcVamb);
 setDiff(D);onScroll();
 })();

@@ -8,7 +8,7 @@
 <meta name="author" content="xSlowly">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700;800&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
-<link rel="stylesheet" href="css/style.css?v=6">
+<link rel="stylesheet" href="css/style.css?v=10">
 </head>
 <body>
 
@@ -52,7 +52,7 @@
       <a class="btn ghost" href="#g2">Врата II</a>
     </div>
     <div class="stats" id="heroStats">
-      <div><b>1770</b><span>iLvl · Hard</span></div>
+      <div><b>1770</b><span>GS · Hard</span></div>
       <div><b>10:00</b><span>Энрейдж I</span></div>
       <div><b>13:00</b><span>Энрейдж II</span></div>
       <div><b>62 000</b><span>Золото · Hard</span></div>
@@ -101,7 +101,7 @@
   <div class="sec reveal">
     <h3 class="h3">Ориентиры по боеспособности</h3>
     <div class="spec" id="spec"></div>
-    <p class="note">Цифры комьюнити KR (август 2026). NM — расчёт из HP при ~75% аптайма на 6 ДД; проверь себя в «Калькуляторы → Готовность».</p>
+    <p class="note">Цифры сообщества KR (август 2026). Nightmare — оценка: прогнозы сообщества (ДД ~6 500+, саппорт ~5 500+; в реальных наборах часто 7 000–7 500+) и расчёт по HP: между Normal и Hard порог БС растёт примерно как HP<sup>0,65</sup>, что для HP Nightmare даёт ~6 580 у ДД и ~5 680 у саппорта. Проверь себя в «Калькуляторы → Готовность».</p>
   </div>
   <div class="sec reveal">
     <h3 class="h3">Системы рейда</h3>
@@ -250,8 +250,8 @@
     <h3>Готовность персонажа</h3>
     <div class="fields">
       <label class="f">Роль<select id="rRole"><option value="dd">Дамагер</option><option value="sup">Саппорт</option></select></label>
-      <label class="f">iLvl<input id="rIlvl" type="number" value="1772" step="1"></label>
-      <label class="f">Боеспособн.<input id="rCp" type="number" value="4300" step="10"></label>
+      <label class="f">GS<input id="rIlvl" type="number" value="1772" step="1"></label>
+      <label class="f">БС<input id="rCp" type="number" value="4300" step="10"></label>
       <label class="f">DPS, млн/с<input id="rDps" type="number" value="780" step="10"></label>
       <label class="f">Аптайм, %<input id="rUp" type="number" value="75" min="40" max="100"></label>
     </div>
@@ -286,7 +286,7 @@
   <div class="sec reveal" style="margin-top:30px">
     <h3 class="h3">Vambrace <span class="ko">완갑</span> — путь 1 → 25</h3>
     <div class="vamb">
-      <div class="card vcard"><img src="img/boss/vamb-1.jpg" alt="Vambrace +10, тултип" loading="lazy"><div><h3>Получение</h3><p>Эпический Vambrace — за первое прохождение врат II на любой сложности. Даёт статы, iLvl не меняет.</p><div class="tier"><span style="background:#a77fe4"></span></div></div></div>
+      <div class="card vcard"><img src="img/boss/vamb-1.jpg" alt="Vambrace +10, тултип" loading="lazy"><div><h3>Получение</h3><p>Эпический Vambrace — за первое прохождение врат II на любой сложности. Даёт характеристики, GS не меняет.</p><div class="tier"><span style="background:#a77fe4"></span></div></div></div>
       <div class="card vcard"><img src="img/boss/vamb-2.jpg" alt="Vambrace +15, тултип" loading="lazy"><div><h3>+10 · Legendary</h3><p>Прорыв: 200 Specter's Shadow (N) или 100 Hand of Death (H/NM).</p><div class="tier"><span style="background:#e4913d"></span></div></div></div>
       <div class="card vcard"><img src="img/boss/vamb-3.jpg" alt="Vambrace +20, тултип" loading="lazy"><div><h3>+15 · Relic</h3><p>Прорыв: 240 Specter's Shadow или 120 Hand of Death.</p><div class="tier"><span style="background:#dc5841"></span></div></div></div>
       <div class="card vcard"><img src="img/boss/vamb-4.jpg" alt="Vambrace +25, тултип" loading="lazy"><div><h3>+20 · Ancient</h3><p>Прорыв: 150 Hand of Death — только H и NM. Дальше до +25.</p><div class="tier"><span style="background:#e9d6ad"></span></div></div></div>
@@ -294,18 +294,62 @@
     <p class="note">1 Hand of Death заменяет 2 Specter's Shadow на прорывах +10 и +15; если есть оба, сначала тратится Specter's Shadow. Обычная заточка: Silling, золото, Fate Fragment, Fate Destruction / Guardian Stone Crystal, Great Fate Leapstone, Superior Abidos Fusion Material.</p>
   </div>
 
-  <div class="vplan reveal">
-    <div class="calc">
-      <h3>Планер прорыва Vambrace</h3>
-      <div class="fields">
-        <label class="f">Есть<input id="vHave" type="number" min="0" value="60"></label>
-        <label class="f">Нужно<input id="vNeed" type="number" min="1" value="100"></label>
-        <label class="f">Источник<select id="vDiff"><option value="N">N → Specter's Shadow</option><option value="H" selected>H/NM → Hand of Death</option></select></label>
-        <label class="f">«Ещё»<select id="vMore"><option value="1">Оба врата</option><option value="0">Нет</option></select></label>
+  <div class="sec reveal vdmg" style="margin-top:26px">
+    <h3 class="h3">Прирост боеспособности (≈ урона) от Vambrace</h3>
+    <div class="vd-grid">
+      <div class="tbl-wrap"><table id="vStatT"></table></div>
+      <div class="vd-chart">
+        <div class="kicker">Прирост БС за ступень (+10 → +25)</div>
+        <div class="vbars" id="vBars"></div>
+        <p class="note">Столбик — сколько % БС даёт одна успешная ступень; подпись — сколько золота уходит в среднем на 1%. Прыжки на +16 и +21 — новая ступень бонуса базовой атаки (Легенда → Реликт → Древний).</p>
       </div>
-      <div class="out" id="vOut"></div>
     </div>
-    <figure class="vui"><img src="img/boss/vambrace-ui.jpg" alt="Окно заточки Vambrace" loading="lazy"><figcaption>Окно заточки Vambrace</figcaption></figure>
+    <p class="note"><b>Что значит «рост БС».</b> Боеспособность (전투력) в Lost Ark считается от урона персонажа, поэтому +1% БС у ДД — это примерно +1% урона (у саппорта — силы баффов и щитов). Проценты — для персонажа в полной экипировке (Inven); чем слабее персонаж, тем больше прирост: прибавки к характеристике, атаке оружия и базовой атаке у Vambrace фиксированные. Для 1800 GS на +10 Inven даёт не меньше 6,37%. Характеристики — с официальных подсказок; ветка (сила / ловкость / интеллект) зависит от класса.</p>
+  </div>
+
+  <div class="vplan reveal">
+    <div class="calc vcalc">
+      <div class="vc-head"><h3>Калькулятор заточки Vambrace</h3><div class="vc-range" id="vRangeLbl">+10 → +20</div></div>
+      <div class="dual" id="vDual">
+        <div class="dual-track"><i id="vFill"></i></div>
+        <input type="range" id="vFrom" min="0" max="25" step="1" value="10" aria-label="С уровня">
+        <input type="range" id="vTo" min="0" max="25" step="1" value="20" aria-label="До уровня">
+      </div>
+      <div class="dual-ticks" aria-hidden="true"><span>+0</span><span>+5</span><span>+10</span><span>+15</span><span>+20</span><span>+25</span></div>
+      <div class="dual-grades" aria-hidden="true"><span style="--c:#a77fe4;flex:10">Эпик</span><span style="--c:#e4913d;flex:5">Легенда</span><span style="--c:#dc5841;flex:5">Реликт</span><span style="--c:#e9d6ad;flex:5">Древний</span></div>
+      <div class="vc-opts">
+        <div class="vc-opt"><span class="kicker">Дыхания</span><div class="seg2" data-k="br">
+          <button type="button" data-v="0" class="on">Без</button>
+          <button type="button" data-v="g"><img src="img/items/glacier.png" alt="">Glacier's</button>
+          <button type="button" data-v="2"><img src="img/items/lava.png" alt=""><img src="img/items/glacier.png" alt="">Оба</button></div></div>
+        <div class="vc-opt"><span class="kicker">Удача</span><div class="seg2" data-k="luck">
+          <button type="button" data-v="best">Повезло</button>
+          <button type="button" data-v="avg" class="on">В среднем</button>
+          <button type="button" data-v="worst">До гаранта</button></div></div>
+        <div class="vc-opt"><span class="kicker">Прорыв за</span><div class="seg2" data-k="src">
+          <button type="button" data-v="H" class="on"><img src="img/items/hod.png" alt="">H/NM</button>
+          <button type="button" data-v="N"><img src="img/items/sps.png" alt="">Normal</button></div></div>
+        <label class="vc-opt vc-have"><span class="kicker">Уже есть</span><span class="vc-hv"><img id="vHaveIco" src="img/items/hod.png" alt=""><input id="vHave" type="number" min="0" value="0" aria-label="Уже есть материалов на прорыв"></span></label>
+      </div>
+      <div class="vc-sum" id="vSum"></div>
+      <div class="vc-mats" id="vMats"></div>
+      <details class="vc-steps"><summary>По ступеням</summary><div class="tbl-wrap"><table id="vCostT"></table></div></details>
+      <p class="note">Как считается: шанс растёт на 10% от базового за каждый провал (максимум вдвое), «энергия мастера» копит 46,51% текущего шанса за провал и на 100% даёт гарантированный успех. Дыхания добавляют шанс до удвоения базового; Lava's и Glacier's дают одинаковый шанс. Модель совпадает с калькулятором loaup с Inven (+21 в среднем 32,36 попытки без дыханий и 21,57 с ними). Серебро и осколки включают разовое заполнение шкалы опыта ступени.</p>
+    </div>
+    <div class="vside">
+      <figure class="vui"><img src="img/boss/vambrace-ui.jpg" alt="Окно заточки Vambrace" loading="lazy"><figcaption>Окно заточки Vambrace</figcaption></figure>
+      <div class="card vtips">
+        <h3>Советы с Inven</h3>
+        <ul>
+          <li><b>Normal</b>: сразу до +10, дальше по ситуации. <b>Hard/NM</b>: смело до +20 — на 1780 это один из самых выгодных приростов.</li>
+          <li>Lava's Breath и спец-заточку (Transfer Leapstone) — лучше в оружие. Glacier's Breath — в Vambrace.</li>
+          <li>Дыхания экономят немного: на +21 разница «без / все» около 100 тыс. золота.</li>
+          <li>Саппортам с хорошими аксессуарами Vambrace обычно выгоднее всего остального.</li>
+          <li>Узкое место — серебро: на +25 его уходит десятки миллионов.</li>
+          <li>Выход на финиш: Hard ~7 недель, Normal 8+ недель (с учётом 10 Specter's Shadow за первое прохождение).</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <div class="sec reveal" style="margin-top:30px">
@@ -377,8 +421,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/soldier-glb.js"></script>
-<script src="js/data.js?v=3"></script>
-<script src="js/app.js?v=4"></script>
+<script src="js/data.js?v=4"></script>
+<script src="js/app.js?v=6"></script>
 <script src="js/arena.js?v=9"></script>
 <script src="js/hero.js?v=3"></script>
 <script src="js/fx.js?v=2"></script>

@@ -49,7 +49,7 @@ if(window.gsap&&window.ScrollTrigger&&!RM){
   // items and source cards cascade
   ScrollTrigger.batch('.item,.src a,.sc,.vcard',{start:'top 92%',once:true,onEnter:els=>gsap.from(els,{y:16,opacity:0,duration:.6,stagger:.03,ease:'power2.out',clearProps:'transform'})});
   // gold counters
-  $$('.goldline').forEach(el=>ScrollTrigger.create({trigger:el,start:'top 90%',once:true,onEnter:()=>{const to=+el.textContent.replace(/\D/g,'');const o={v:0};gsap.to(o,{v:to,duration:1.2,ease:'power3.out',onUpdate:()=>el.textContent=Math.round(o.v).toLocaleString('ru-RU')+' G'});}}));
+  $$('.goldline').forEach(el=>ScrollTrigger.create({trigger:el,start:'top 90%',once:true,onEnter:()=>{const to=+el.textContent.replace(/\D/g,'');const o={v:0};gsap.to(o,{v:to,duration:1.2,ease:'power3.out',onUpdate:()=>el.textContent=Math.round(o.v).toLocaleString(window.LOCALE?window.LOCALE():'ru-RU')+' G'});}}));
   // a lightning flash when gate II comes into view
   ScrollTrigger.create({trigger:'#g2',start:'top 60%',onEnter:()=>{const f=$('#flash');if(f){f.classList.remove('go');void f.offsetWidth;f.classList.add('go');}}});
   addEventListener('load',()=>ScrollTrigger.refresh());

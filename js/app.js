@@ -3,8 +3,14 @@
 "use strict";
 const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
 const store={get(k,d){try{const v=localStorage.getItem('belg_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('belg_'+k,JSON.stringify(v))}catch(e){}}};
-const fmt=(n,d=0)=>Number(n).toLocaleString('ru-RU',{maximumFractionDigits:d,minimumFractionDigits:d});
-function big(n){const a=Math.abs(n);if(a>=1e12)return fmt(n/1e12,2)+' трлн';if(a>=1e9)return fmt(n/1e9,2)+' млрд';if(a>=1e6)return fmt(n/1e6,0)+' млн';return fmt(n,0);}
+const LOC=()=>window.LOCALE?window.LOCALE():'ru-RU',LG=()=>window.LANG||'ru';
+const fmt=(n,d=0)=>Number(n).toLocaleString(LOC(),{maximumFractionDigits:d,minimumFractionDigits:d});
+function big(n){const a=Math.abs(n),L=LG();
+  if(L=='zh'){if(a>=1e12)return fmt(n/1e12,2)+' 万亿';if(a>=1e8)return fmt(n/1e8,a>=1e10?0:1)+' 亿';if(a>=1e4)return fmt(n/1e4,0)+' 万';return fmt(n,0);}
+  const U=L=='en'?[' T',' B',' M']:[' трлн',' млрд',' млн'];
+  if(a>=1e12)return fmt(n/1e12,2)+U[0];if(a>=1e9)return fmt(n/1e9,2)+U[1];if(a>=1e6)return fmt(n/1e6,0)+U[2];return fmt(n,0);}
+/* difficulty names in the current language */
+const DNL=()=>LG()=='zh'?{N:'普通',H:'困难',NM:'噩梦'}:DN;
 const mmss=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -42,19 +48,19 @@ $$('.diff button').forEach(b=>b.onclick=()=>setDiff(b.dataset.d));
 /* ================= overview ================= */
 const GLD={N:50000,H:62000,NM:75000};
 function renderOverview(){
-  $$('.dname').forEach(e=>e.textContent=DN[D]);
+  $$('.dname').forEach(e=>e.textContent=DNL()[D]);
   $('#facts').innerHTML=[
     ['Вход GS',ILVL[D]],['Игроков','8'],['Врат','2'],['Энрейдж','10:00 / 13:00','wide'],
     ['Золото',fmt(GOLD[D][0][0]+GOLD[D][1][0])],['Ядра Ark Grid',CORES[D]+' + '+CORES[D]],
     ['Vambrace',(D=='N'?'Specter ×30':'Hand of Death ×30'),'wide'],['Слабость','Holy']
   ].map(([a,b,c])=>`<div class="${c||''}" title="${esc(a)}: ${esc(b)}"><span>${a}</span><b>${b}</b></div>`).join('');
-  const rows=['N','H','NM'].flatMap(d=>[0,1].map(g=>{const h=HP[d][g],e=ENR[g];return `<tr class="${d==D?'sel':''}"><td>${DN[d]}</td><td>${g?'II · Phetus':'I · Belgardin'}</td><td class="n">${big(h)}</td><td class="n">${big(h/300)}</td><td class="n">${mmss(e)}</td><td class="n">${big(h/e)}/с</td><td class="n">${big(h/e/6)}/с</td></tr>`}));
+  const rows=['N','H','NM'].flatMap(d=>[0,1].map(g=>{const h=HP[d][g],e=ENR[g];return `<tr class="${d==D?'sel':''}"><td>${DNL()[d]}</td><td>${g?'II · Phetus':'I · Belgardin'}</td><td class="n">${big(h)}</td><td class="n">${big(h/300)}</td><td class="n">${mmss(e)}</td><td class="n">${big(h/e)}/с</td><td class="n">${big(h/e/6)}/с</td></tr>`}));
   $('#hpTable').innerHTML=`<thead><tr><th>Сложн.</th><th>Врата</th><th class="n">HP</th><th class="n">1 полоска</th><th class="n">Энрейдж</th><th class="n">Минимум DPS отряда</th><th class="n">на 1 ДД (6 ДД)</th></tr></thead><tbody>${rows.join('')}<tr><td>Matching (8)</td><td>I / II</td><td class="n">869.7 / 975.3 млрд</td><td class="n" colspan="4">Соло-режим: 66.8 / 93.6 млрд, бесконечные воскрешения</td></tr></tbody>`;
   const nmDps=big(HP.NM[1]/(780*.75)/6)+'/с';
   const SP=[{d:'N',c:'#8fd3bf',il:1750,cp:'3300+',set:'3800–4200',dps:'~600 млн/с',sup:'3000+',f:.62},
             {d:'H',c:'#d4a85a',il:1770,cp:'4500+',set:'4600–5200',dps:'800 млн+/с',sup:'4000+',f:.82},
             {d:'NM',c:'#dc5841',il:1780,cp:'~6 500+ (оценка)',set:'7 000–7 500+',dps:'≈'+nmDps+' (расчёт)',sup:'~5 500+ (оценка)',f:1}];
-  $('#spec').innerHTML=SP.map(s=>`<article class="sc ${s.d==D?'sel':''}" style="--c:${s.c}"><div class="sc-h"><b>${DN[s.d]}</b><span>${s.d}</span></div><div class="sc-il">${s.il}<small>GS</small></div>
+  $('#spec').innerHTML=SP.map(s=>`<article class="sc ${s.d==D?'sel':''}" style="--c:${s.c}"><div class="sc-h"><b>${DNL()[s.d]}</b><span>${s.d}</span></div><div class="sc-il">${s.il}<small>GS</small></div>
     <dl><div><dt>ДД: БС хватает</dt><dd>${s.cp}</dd></div><div><dt>ДД: типичный набор</dt><dd>${s.set}</dd></div><div><dt>ДД: DPS ориентир</dt><dd>${s.dps}</dd></div><div><dt>Саппорт: БС</dt><dd>${s.sup}</dd></div><span class="bar"><i style="width:${s.f*100}%"></i></span></dl></article>`).join('');
   const sys=[
     ['Holding Just Guard','홀딩 저스트 가드','Новая система. Зажать guard и держать всю серию ударов. Успех — немного урона и гарантированное окно для отряда. Только выдержавшие весь Holding могут взять следующий обычный JG.'],
@@ -67,8 +73,8 @@ function renderOverview(){
     ['Сохранение и воскрешения','관문 저장 · 부활','Прогресс по вратам сохраняется. Воскрешения — общий пул отряда. Попытки общие для N/H/NM.']];
   $('#systems').innerHTML=sys.map(([a,k,t])=>`<div class="card"><h3>${a} <span class="ko">${k}</span></h3><p>${t}</p></div>`).join('');
   $('#ph1hp').textContent='HP '+big(HP[D][0]);$('#ph2hp').textContent='HP '+big(HP[D][1]);
-  const st=$$('#heroStats div');st[0].querySelector('b').textContent=ILVL[D];st[0].querySelector('span').textContent='GS · '+DN[D];
-  st[3].querySelector('b').textContent=GLD[D].toLocaleString('ru-RU');st[3].querySelector('span').textContent='Золото · '+DN[D];
+  const st=$$('#heroStats div');st[0].querySelector('b').textContent=ILVL[D];st[0].querySelector('span').textContent='GS · '+DNL()[D];
+  st[3].querySelector('b').textContent=GLD[D].toLocaleString(LOC());st[3].querySelector('span').textContent=T('Золото')+' · '+DNL()[D];
 }
 
 /* ================= gimmick timelines + media viewer ================= */
@@ -78,7 +84,7 @@ function mediaThumb(m){return m.yt?'img/gimmicks/yt-g1.jpg':posterOf(m);}
 function inlineMedia(x){if(!x.m)return '';return `<div class="tl-inline"><div class="shots">${x.m.map(m=>m.v?`<figure class="shot" data-clip="${m.v}"><video data-src="${m.v}" poster="${posterOf(m)}" muted loop playsinline preload="none"></video><b>${esc(m.c)}</b></figure>`:m.yt?`<a class="shot" href="${ytUrl(m)}" target="_blank" rel="noopener" style="display:block"><img src="img/gimmicks/yt-g1.jpg" alt="" style="width:100%;height:100%;object-fit:cover"><b>▶ ${esc(m.c)}</b></a>`:`<figure class="shot"><img class="banner natural" src="${m.i}" alt="${esc(m.c)}" style="height:100%;border:0;border-radius:0"><b>${esc(m.c)}</b></figure>`).join('')}</div></div>`;}
 function renderTL(g){
   const tl=g==1?TL1:TL2,el=$('#tlG'+g);GV[g].tl=tl;
-  el.innerHTML=tl.map((x,i)=>`<div class="tl-item" data-i="${i}" tabindex="0"><span class="tl-bar">${x.bar}</span><h3>${x.t} ${x.ko?`<span class="ko">${x.ko}</span>`:''}</h3><p>${x.p}</p>${x.d&&x.d[D]?`<div class="dnote">${DN[D]}: ${x.d[D]}</div>`:''}
+  el.innerHTML=tl.map((x,i)=>`<div class="tl-item" data-i="${i}" tabindex="0"><span class="tl-bar">${x.bar}</span><h3>${x.t} ${x.ko?`<span class="ko">${x.ko}</span>`:''}</h3><p data-trh>${x.p}</p>${x.d&&x.d[D]?`<div class="dnote">${DNL()[D]}: <span data-trh>${x.d[D]}</span></div>`:''}
     <div class="tl-acts">${x.sim?`<button class="btn sm" data-play="${x.sim}">▶ 3D-схема</button>`:''}${x.m?`<span class="mcount">🎬 ${x.m.length} медиа</span>`:''}</div>${inlineMedia(x)}</div>`).join('');
   el.querySelectorAll('.tl-item').forEach(it=>{it.onclick=e=>{if(e.target.closest('[data-play],.shot,a'))return;setGV(g,+it.dataset.i,0);};it.onkeydown=e=>{if(e.key=='Enter')setGV(g,+it.dataset.i,0);};});
   const firstWithMedia=tl.findIndex(x=>x.m);setGV(g,GV[g].i>=0?GV[g].i:firstWithMedia,GV[g].m||0,true);
@@ -109,10 +115,10 @@ if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.fo
 const TAGN={kd:'сбитие',stag:'стаггер',grab:'захват',jg:'JG',death:'смерть',cnt:'контра',fall:'падение'};
 function renderList(el,list,gate){
   el.innerHTML=list.map(p=>{const th=SHOTS[p.sim]?`<img class="pth" src="img/screens/${p.sim}-1.jpg" alt="" loading="lazy">`:'';
-   return `<details class="pat" data-cat="${p.c}" data-q="${esc((p.n+' '+p.ko+' '+p.t+' '+(p.dn||'')).toLowerCase().replace(/<[^>]+>/g,''))}">
+   return `<details class="pat" data-cat="${p.c}" data-q="${esc((p.n+' '+p.ko+' '+p.t+' '+(p.dn||'')+' '+T(p.t)+' '+T(p.dn||'')).toLowerCase().replace(/<[^>]+>/g,''))}">
    <summary>${th}<h3>${p.n} <span class="ko">${p.ko}</span></h3><span class="stars">${p.c=='insight'?'INSIGHT':'★'.repeat(Math.min(p.s,7))}</span></summary>
    <div class="body"><div class="tags">${p.c=='red'?'<span class="tag t-death">красный</span>':''}${p.tg.map(t=>`<span class="tag t-${t}">${TAGN[t]}</span>`).join('')}</div>
-   <p>${p.t}</p>${p.dn?`<div class="diffnote">${p.dn}</div>`:''}${shotsHTML(p.sim)}${p.sim=='coffinA'?shotsHTML('coffinB'):''}
+   <p data-trh>${p.t}</p>${p.dn?`<div class="diffnote" data-trh>${p.dn}</div>`:''}${shotsHTML(p.sim)}${p.sim=='coffinA'?shotsHTML('coffinB'):''}
    <div style="display:flex;gap:6px;flex-wrap:wrap">${p.sim?`<button class="btn sm" data-play="${p.sim}">▶ 3D-схема</button>`:''}${p.sim=='coffinA'?`<button class="btn sm" data-play="coffinB">▶ 3D: по очереди</button>`:''}<a class="btn sm" href="${gate==1?URL1:URL2}" target="_blank" rel="noopener">Гайд Inven ↗</a></div></div></details>`;}).join('');
   el.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)d.querySelectorAll('video').forEach(prime);}));
 }
@@ -128,7 +134,7 @@ function tier(p){return p>=.20?['Топ (20%+)','p-top']:p>=.166?['1 доля+',
 function calcDps(){
   const g=v('dGate'),t=v('dMin')*60+v('dSec'),dmg=v('dDmg')*(+$('#dUnit').value),hp=HP[D][g];
   const share=dmg/hp,dps=t?dmg/t:0,[tl,tc]=tier(share);
-  $('#dOut').innerHTML=`<div><b>${(share*100).toFixed(1)}%</b><span>доля HP врат</span></div><div><b>${big(dps)}</b><span>мой DPS, /с</span></div><div><b><span class="pill ${tc}">${tl}</span></b><span>оценка (из 6 ДД)</span></div><div><b>${big(hp)}</b><span>HP · ${DN[D]}</span></div>`;
+  $('#dOut').innerHTML=`<div><b>${(share*100).toFixed(1)}%</b><span>доля HP врат</span></div><div><b>${big(dps)}</b><span>мой DPS, /с</span></div><div><b><span class="pill ${tc}">${tl}</span></b><span>оценка (из 6 ДД)</span></div><div><b>${big(hp)}</b><span>HP · ${DNL()[D]}</span></div>`;
   $('#dMeter').style.width=Math.min(100,share/.2*100)+'%';
   $('#dTable').innerHTML=`<thead><tr><th>Порог</th><th class="n">Урон</th><th class="n">в 억</th><th class="n">DPS при ${mmss(t)}</th></tr></thead><tbody>${[[.15,'Уверенно 15%'],[.166,'1 доля 16.6%'],[.20,'Топ 20%']].map(([p,n])=>`<tr><td>${n}</td><td class="n">${big(hp*p)}</td><td class="n">${fmt(hp*p/1e8)}</td><td class="n">${t?big(hp*p/t):'—'}</td></tr>`).join('')}</tbody>`;}
 function calcRdy(){
@@ -139,7 +145,7 @@ function calcRdy(){
     if(!c){cpS='p-warn';cpL='нет данных';}else if(cp>=c[1]){cpS='p-ok';cpL='комфортно';}else if(cp>=c[0]){cpS='p-ok';cpL='хватает';}else if(cp>=c[0]*.92){cpS='p-warn';cpL='впритык';}else{cpS='p-bad';cpL='мало';}
     let dpsL='',score=0;if(role=='dd'){const r=dps/need;dpsL=` · у тебя ${Math.round(r*100)}%`;score=r>=1.1?2:r>=.95?1:0;}else{score=cpS=='p-ok'?2:cpS=='p-warn'?1:0;}
     const res=!ilOk?['Не пустит','p-bad']:(role=='dd'?(score==2&&cpS!='p-bad'?['Готов','p-ok']:score>=1?['Рискованно','p-warn']:['Рано','p-bad']):(score==2?['Готов','p-ok']:score==1?['Рискованно','p-warn']:['Рано','p-bad']));
-    return `<tr class="${d==D?'sel':''}"><td>${DN[d]}</td><td><span class="pill ${ilOk?'p-ok':'p-bad'}">${ILVL[d]}${ilOk?' ✓':' ✗'}</span></td><td><span class="pill ${cpS}">${cpL}</span></td><td class="n">${role=='dd'?big(need)+'/с'+dpsL:'—'}</td><td><span class="pill ${res[1]}">${res[0]}</span></td></tr>`}).join('')}</tbody>`;}
+    return `<tr class="${d==D?'sel':''}"><td>${DNL()[d]}</td><td><span class="pill ${ilOk?'p-ok':'p-bad'}">${ILVL[d]}${ilOk?' ✓':' ✗'}</span></td><td><span class="pill ${cpS}">${cpL}</span></td><td class="n">${role=='dd'?big(need)+'/с'+dpsL:'—'}</td><td><span class="pill ${res[1]}">${res[0]}</span></td></tr>`}).join('')}</tbody>`;}
 function calcPace(){
   const g=v('pGate'),t=v('pMin')*60+v('pSec'),bar=Math.min(300,Math.max(0,v('pBar'))),hp=HP[D][g],e=ENR[g];
   const done=(300-bar)/300,proj=done>0?t/done:0,dps=t?hp*done/t:0,ok=proj&&proj<=e;
@@ -174,7 +180,7 @@ const MAT=[['ff','Fate Fragment','#e8d7b4'],['fdc','Fate Destruction Stone Cryst
 const GRADE_AT=n=>n<=10?'#a77fe4':n<=15?'#e4913d':n<=20?'#dc5841':'#e9d6ad';
 const BAND_C=['#66d29e','#d8c35c','#e4913d','#dc5841','#ff5a7a'];
 const ico=(k,t)=>`<img src="img/items/${k}.png" alt="${t||''}" title="${t||''}">`;
-const short=n=>n>=1e6?fmt(n/1e6,n>=1e7?0:1)+' млн':fmt(n);
+const short=n=>{const L=LG();if(L=='zh')return n>=1e4?fmt(n/1e4,n>=1e6?0:1)+' 万':fmt(n);return n>=1e6?fmt(n/1e6,n>=1e7?0:1)+(L=='en'?' M':' млн'):fmt(n);};
 function vSlider(e){
   const f=$('#vFrom'),t=$('#vTo');let a=+f.value,b=+t.value;
   if(a>=b){if(e&&e.target===f){a=Math.min(a,24);b=a+1;}else{b=Math.max(b,1);a=b-1;}f.value=a;t.value=b;}
@@ -238,6 +244,8 @@ const t=$('#title');if(t&&!matchMedia('(prefers-reduced-motion: reduce)').matche
 /* ================= init ================= */
 function renderAll(){renderOverview();renderTL(1);renderTL(2);rail(1);rail(2);calcDps();calcRdy();calcPace();renderRewards();if(window.__observeTL)window.__observeTL();}
 renderList($('#listG1'),P1,1);renderList($('#listG2'),P2,2);bindFilters();
+/* language switch: re-render everything built from numbers and difficulty names */
+(window.__i18nHooks=window.__i18nHooks||[]).push(()=>{renderList($('#listG1'),P1,1);renderList($('#listG2'),P2,2);renderAll();$$('.filters[data-for] input').forEach(i=>i.dispatchEvent(new Event('input')));});
 ['dGate','dMin','dSec','dDmg','dUnit'].forEach(id=>$('#'+id).addEventListener('input',calcDps));
 ['rRole','rIlvl','rCp','rDps','rUp'].forEach(id=>$('#'+id).addEventListener('input',calcRdy));
 ['pGate','pMin','pSec','pBar'].forEach(id=>$('#'+id).addEventListener('input',calcPace));

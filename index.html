@@ -8,7 +8,7 @@
 <meta name="author" content="xSlowly">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700;800&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
-<link rel="stylesheet" href="css/style.css?v=11">
+<link rel="stylesheet" href="css/style.css?v=12">
 </head>
 <body>
 
@@ -26,6 +26,7 @@
     <nav class="nav" id="nav">
       <a href="#phases">Фазы</a><a href="#arena-sec">3D-арена</a><a href="#g1">Врата I</a><a href="#g2">Врата II</a><a href="#calc">Калькуляторы</a><a href="#loot">Награды</a><a href="#src">Источники</a>
     </nav>
+    <div class="lang" role="group" aria-label="Язык" translate="no"><i aria-hidden="true"></i><button type="button" data-l="ru" aria-pressed="true" title="Русский">RU</button><button type="button" data-l="en" aria-pressed="false" title="English">EN</button><button type="button" data-l="zh" aria-pressed="false" title="简体中文">CN</button></div>
     <a class="author" href="https://discord.com/users/346621596125102083" target="_blank" rel="noopener" title="Автор в Discord"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M20.3 4.4A19.6 19.6 0 0 0 15.4 3l-.6 1.3a18 18 0 0 0-5.6 0L8.6 3a19.6 19.6 0 0 0-4.9 1.4C.6 9 0 13.6.3 18.1a19.8 19.8 0 0 0 6 3l1.3-2a12.8 12.8 0 0 1-2-1l.5-.4a14 14 0 0 0 11.8 0l.5.4-2 1 1.3 2a19.7 19.7 0 0 0 6-3c.4-5.2-.7-9.7-3.1-13.7ZM8.5 15.4c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm7 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Z"/></svg><span>xSlowly</span></a>
     <div class="diff" role="group" aria-label="Сложность">
       <button data-d="N" aria-pressed="false">N</button>
@@ -101,7 +102,7 @@
   <div class="sec reveal">
     <h3 class="h3">Ориентиры по боеспособности</h3>
     <div class="spec" id="spec"></div>
-    <p class="note">Цифры сообщества KR (август 2026). Nightmare — оценка: прогнозы сообщества (ДД ~6 500+, саппорт ~5 500+; в реальных наборах часто 7 000–7 500+) и расчёт по HP: между Normal и Hard порог БС растёт примерно как HP<sup>0,65</sup>, что для HP Nightmare даёт ~6 580 у ДД и ~5 680 у саппорта. Проверь себя в «Калькуляторы → Готовность».</p>
+    <p data-trh class="note">Цифры сообщества KR (август 2026). Nightmare — оценка: прогнозы сообщества (ДД ~6 500+, саппорт ~5 500+; в реальных наборах часто 7 000–7 500+) и расчёт по HP: между Normal и Hard порог БС растёт примерно как HP<sup>0,65</sup>, что для HP Nightmare даёт ~6 580 у ДД и ~5 680 у саппорта. Проверь себя в «Калькуляторы → Готовность».</p>
   </div>
   <div class="sec reveal">
     <h3 class="h3">Системы рейда</h3>
@@ -153,7 +154,7 @@
   </div>
   <div class="chip-group"><div class="chips" id="chipsG1"></div><div class="chips" id="chipsG2"></div></div>
   <div class="legend">
-    <span><i style="background:var(--blood)"></i>Смерть / почти смерть</span><span><i style="background:var(--kd)"></i>Сбитие</span><span><i style="background:var(--stag)"></i>Стаггер</span><span><i style="background:var(--grab)"></i>Захват</span><span><i style="background:var(--jg)"></i>Just Guard</span><span><i style="background:var(--soul)"></i>Контра</span><span><i style="background:var(--safe)"></i>Безопасно</span>
+    <span data-trh><i style="background:var(--blood)"></i>Смерть / почти смерть</span><span data-trh><i style="background:var(--kd)"></i>Сбитие</span><span data-trh><i style="background:var(--stag)"></i>Стаггер</span><span data-trh><i style="background:var(--grab)"></i>Захват</span><span><i style="background:var(--jg)"></i>Just Guard</span><span data-trh><i style="background:var(--soul)"></i>Контра</span><span data-trh><i style="background:var(--safe)"></i>Безопасно</span>
     <span class="keys">Клавиши: Пробел — пауза · ←/→ — ±0,5 с · [ ] — пред./след. · 1–6 — камера · F — экран</span>
   </div>
   <ol class="steps" id="steps"></ol>
@@ -284,7 +285,7 @@
   <p class="note">H/NM: Relic-ядро 9% → 14%, Ancient 1% → 2%; 69 ядер подряд без Ancient — 70-е гарантированно Ancient.</p>
 
   <div class="sec reveal" style="margin-top:30px">
-    <h3 class="h3">Vambrace <span class="ko">완갑</span> — путь 1 → 25</h3>
+    <h3 data-trh class="h3">Vambrace <span class="ko">완갑</span> — путь 1 → 25</h3>
     <div class="vamb">
       <div class="card vcard"><img src="img/boss/vamb-1.jpg" alt="Vambrace +10, тултип" loading="lazy"><div><h3>Получение</h3><p>Эпический Vambrace — за первое прохождение врат II на любой сложности. Даёт характеристики, GS не меняет.</p><div class="tier"><span style="background:#a77fe4"></span></div></div></div>
       <div class="card vcard"><img src="img/boss/vamb-2.jpg" alt="Vambrace +15, тултип" loading="lazy"><div><h3>+10 · Legendary</h3><p>Прорыв: 200 Specter's Shadow (N) или 100 Hand of Death (H/NM).</p><div class="tier"><span style="background:#e4913d"></span></div></div></div>
@@ -304,7 +305,7 @@
         <p class="note">Столбик — сколько % БС даёт одна успешная ступень; подпись — сколько золота уходит в среднем на 1%. Прыжки на +16 и +21 — новая ступень бонуса базовой атаки (Легенда → Реликт → Древний).</p>
       </div>
     </div>
-    <p class="note"><b>Что значит «рост БС».</b> Боеспособность (전투력) в Lost Ark считается от урона персонажа, поэтому +1% БС у ДД — это примерно +1% урона (у саппорта — силы баффов и щитов). Проценты — для персонажа в полной экипировке (Inven); чем слабее персонаж, тем больше прирост: прибавки к характеристике, атаке оружия и базовой атаке у Vambrace фиксированные. Для 1800 GS на +10 Inven даёт не меньше 6,37%. Характеристики — с официальных подсказок; ветка (сила / ловкость / интеллект) зависит от класса.</p>
+    <p data-trh class="note"><b>Что значит «рост БС».</b> Боеспособность (전투력) в Lost Ark считается от урона персонажа, поэтому +1% БС у ДД — это примерно +1% урона (у саппорта — силы баффов и щитов). Проценты — для персонажа в полной экипировке (Inven); чем слабее персонаж, тем больше прирост: прибавки к характеристике, атаке оружия и базовой атаке у Vambrace фиксированные. Для 1800 GS на +10 Inven даёт не меньше 6,37%. Характеристики — с официальных подсказок; ветка (сила / ловкость / интеллект) зависит от класса.</p>
   </div>
 
   <div class="vplan reveal">
@@ -342,7 +343,7 @@
       <div class="card vtips">
         <h3>Советы с Inven</h3>
         <ul>
-          <li><b>Normal</b>: сразу до +10, дальше по ситуации. <b>Hard/NM</b>: смело до +20 — на 1780 это один из самых выгодных приростов.</li>
+          <li data-trh><b>Normal</b>: сразу до +10, дальше по ситуации. <b>Hard/NM</b>: смело до +20 — на 1780 это один из самых выгодных приростов.</li>
           <li>Lava's Breath и спец-заточку (Transfer Leapstone) — лучше в оружие. Glacier's Breath — в Vambrace.</li>
           <li>Дыхания экономят немного: на +21 разница «без / все» около 100 тыс. золота.</li>
           <li>Саппортам с хорошими аксессуарами Vambrace обычно выгоднее всего остального.</li>
@@ -354,7 +355,7 @@
   </div>
 
   <div class="sec reveal" style="margin-top:30px">
-    <h3 class="h3">Belgardin Conquest <span class="ko">벨가르딘 정복전</span> · закончилось 16 сентября</h3>
+    <h3 data-trh class="h3">Belgardin Conquest <span class="ko">벨가르딘 정복전</span> · закончилось 16 сентября</h3>
     <div class="banners b2">
       <figure><img class="banner natural" src="img/boss/conquest.jpg" alt="Баннер события" loading="lazy"><figcaption>Баннер события</figcaption></figure>
       <figure><img class="banner natural" src="img/boss/titles.jpg" alt="Титулы" loading="lazy"><figcaption>Титулы «Bringer of Death» (죽음을 부르는 자) и «Croce» (크로체)</figcaption></figure>
@@ -376,7 +377,7 @@
 <!-- LORE + SOURCES -->
 <section class="chapter wrap" id="src" data-amb="img/boss/belgardin-blur.jpg">
   <div class="lore reveal">
-    <blockquote>«Мне неважно, сколько душ придётся собрать».<small>Мотив Белгардина в двух словах — пересказ, не цитата из игры.</small></blockquote>
+    <blockquote data-trh>«Мне неважно, сколько душ придётся собрать».<small>Мотив Белгардина в двух словах — пересказ, не цитата из игры.</small></blockquote>
     <div style="display:grid;gap:14px">
       <p>Belgardin Croce — святой из Sacrea. После гибели подруги детства Isabella ушёл в запретную некромантию и умер, так её и не вернув. Его тело стало оболочкой для одного из «существующих с начала времён» — но одержимость Белгардина поглотила сущность.</p>
       <p>Во вторых вратах истинная форма — Phetus an Kragma — разрывает тело и переносит бой в Kragma's Field of Annihilation. После победы он всё же воскрешает Изабеллу и исчезает, почуяв в герое пламя бездны.</p>
@@ -389,18 +390,18 @@
     <p class="lead">Иконки предметов — с CDN игры и из базы Inven. Арты — из официального патчноута. Клипы атак — из гайдов Inven, клипы механик врат II — с Arca.live; всё пережато в MP4.</p>
   </div>
   <div class="src reveal">
-    <a href="https://www.inven.co.kr/board/lostark/4821/110616" target="_blank" rel="noopener">Inven · Врата I, все атаки с гифками<span>22 обычные, 2 Insight, 3 смертельные атаки</span></a>
-    <a href="https://www.inven.co.kr/board/lostark/4821/110652" target="_blank" rel="noopener">Inven · Врата II, все атаки с гифками<span>20 обычных атак и 4 захвата</span></a>
-    <a href="https://www.inven.co.kr/board/lostark/4821/110620" target="_blank" rel="noopener">Inven · Time Attack 195, схемы узоров<span>NM: шлепки, V, вафля, волны</span></a>
-    <a href="https://www.inven.co.kr/board/lostark/5343/153711" target="_blank" rel="noopener">Inven · NM врата I с видео и тайм-кодами<span>240, 195, 120, 3 клона, финал</span></a>
-    <a href="https://www.inven.co.kr/board/lostark/6271/3976005" target="_blank" rel="noopener">Inven · Большие механики Normal<span>75, 350, 315 со скриншотами</span></a>
-    <a href="https://arca.live/b/lostark/179073928" target="_blank" rel="noopener">Arca · механики врат II в клипах (Hard)<span>360, 320, 300, 280, 240, 195, Angry Bird</span></a>
-    <a href="https://arca.live/b/lostark/179011733" target="_blank" rel="noopener">Arca · шпаргалка по механикам<span>Порядок механик обоих врат</span></a>
-    <a href="https://www.inven.co.kr/board/lostark/4820/9611" target="_blank" rel="noopener">Inven · патчноут Belgardin<span>Официальные арты и награды</span></a>
-    <a href="https://www.lobal.kr/tips/raid/raid-boss-guide/belgardin" target="_blank" rel="noopener">Lobal · HP, пороги, награды<span>Таблица наград нормала</span></a>
-    <a href="https://loagg.com/raid" target="_blank" rel="noopener">LOAGG · выгода «Ещё награды»<span>H ~+19 тыс., NM ~+21 тыс. (окт. 2026)</span></a>
-    <a href="https://www.dogdrip.net/718069520" target="_blank" rel="noopener">Dogdrip · отзыв N/H с планками<span>Боеспособность и DPS для ДД и саппортов</span></a>
-    <a href="https://labs.invenglobal.com/articles/24462/defeat-belgardine-and-claim-the-vambrace-shadow-raid-update" target="_blank" rel="noopener">Inven Global · обзор патча (EN)<span>Вход, сохранение, Vambrace, миссии</span></a>
+    <a data-trh href="https://www.inven.co.kr/board/lostark/4821/110616" target="_blank" rel="noopener">Inven · Врата I, все атаки с гифками<span>22 обычные, 2 Insight, 3 смертельные атаки</span></a>
+    <a data-trh href="https://www.inven.co.kr/board/lostark/4821/110652" target="_blank" rel="noopener">Inven · Врата II, все атаки с гифками<span>20 обычных атак и 4 захвата</span></a>
+    <a data-trh href="https://www.inven.co.kr/board/lostark/4821/110620" target="_blank" rel="noopener">Inven · Time Attack 195, схемы узоров<span>NM: шлепки, V, вафля, волны</span></a>
+    <a data-trh href="https://www.inven.co.kr/board/lostark/5343/153711" target="_blank" rel="noopener">Inven · NM врата I с видео и тайм-кодами<span>240, 195, 120, 3 клона, финал</span></a>
+    <a data-trh href="https://www.inven.co.kr/board/lostark/6271/3976005" target="_blank" rel="noopener">Inven · Большие механики Normal<span>75, 350, 315 со скриншотами</span></a>
+    <a data-trh href="https://arca.live/b/lostark/179073928" target="_blank" rel="noopener">Arca · механики врат II в клипах (Hard)<span>360, 320, 300, 280, 240, 195, Angry Bird</span></a>
+    <a data-trh href="https://arca.live/b/lostark/179011733" target="_blank" rel="noopener">Arca · шпаргалка по механикам<span>Порядок механик обоих врат</span></a>
+    <a data-trh href="https://www.inven.co.kr/board/lostark/4820/9611" target="_blank" rel="noopener">Inven · патчноут Belgardin<span>Официальные арты и награды</span></a>
+    <a data-trh href="https://www.lobal.kr/tips/raid/raid-boss-guide/belgardin" target="_blank" rel="noopener">Lobal · HP, пороги, награды<span>Таблица наград нормала</span></a>
+    <a data-trh href="https://loagg.com/raid" target="_blank" rel="noopener">LOAGG · выгода «Ещё награды»<span>H ~+19 тыс., NM ~+21 тыс. (окт. 2026)</span></a>
+    <a data-trh href="https://www.dogdrip.net/718069520" target="_blank" rel="noopener">Dogdrip · отзыв N/H с планками<span>Боеспособность и DPS для ДД и саппортов</span></a>
+    <a data-trh href="https://labs.invenglobal.com/articles/24462/defeat-belgardine-and-claim-the-vambrace-shadow-raid-update" target="_blank" rel="noopener">Inven Global · обзор патча (EN)<span>Вход, сохранение, Vambrace, миссии</span></a>
   </div>
 </section>
 
@@ -422,10 +423,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/soldier-glb.js"></script>
+<script src="js/i18n-dict.js?v=3"></script>
+<script src="js/i18n.js?v=3"></script>
 <script src="js/data.js?v=5"></script>
-<script src="js/app.js?v=8"></script>
-<script src="js/arena.js?v=9"></script>
+<script src="js/app.js?v=9"></script>
+<script src="js/arena.js?v=10"></script>
 <script src="js/hero.js?v=3"></script>
-<script src="js/fx.js?v=2"></script>
+<script src="js/fx.js?v=3"></script>
 </body>
 </html>

@@ -216,6 +216,10 @@ function makeKragma(){
 
 /* ================= party ================= */
 const ROLE=i=>i==3||i==7?'sup':'dd';
+/* party labels per language: Д/С (ru), D/S (en), 输/奶 (zh) */
+function roleLabel(i){const sup=ROLE(i)=='sup',L=window.LANG||'ru',n=sup?(i==3?1:2):(i<3?i+1:i);return (sup?{ru:'С',en:'S',zh:'奶'}:{ru:'Д',en:'D',zh:'输'})[L]+n;}
+function relabel(){party.forEach((p,i)=>{const d=p.userData,old=d.lab;const lab=labelSprite(roleLabel(i),ROLE(i)=='sup'?'#8fd3bf':'#d4a85a');lab.position.y=2.25;p.remove(old);old.material.map.dispose();old.material.dispose();p.add(lab);d.lab=lab;});if(sim)apply();}
+(window.__i18nHooks=window.__i18nHooks||[]).push(()=>{if(partyReady)relabel();});
 function labelSprite(txt,col){const c=document.createElement('canvas');c.width=256;c.height=96;const g=c.getContext('2d');g.font='700 44px "Golos Text", sans-serif';g.textAlign='center';g.textBaseline='middle';
   g.fillStyle='rgba(10,8,14,.72)';const w=g.measureText(txt).width+34;g.beginPath();g.roundRect?g.roundRect(128-w/2,18,w,60,30):g.rect(128-w/2,18,w,60);g.fill();g.strokeStyle=col;g.lineWidth=3;g.stroke();g.fillStyle=col;g.fillText(txt,128,50);
   const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,depthTest:false,transparent:true}));s.scale.set(1.3,.49,1);s.renderOrder=10;return s;}
@@ -228,7 +232,7 @@ function partyMember(i,model){
     mixer.update(Math.random()*2);}
   else{body=new THREE.Group();const m=std(col,{roughness:.45});const b=new THREE.Mesh(new THREE.CylinderGeometry(.22,.26,.9,12),m);b.position.y=.6;body.add(b);const h=new THREE.Mesh(new THREE.SphereGeometry(.19,14,10),m);h.position.y=1.2;body.add(h);shadowize(body);g.add(body);}
   const ring=new THREE.Mesh(new THREE.RingGeometry(.36,.46,32),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.85,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=.03;g.add(ring);
-  const lab=labelSprite(sup?'С'+(i==3?1:2):'Д'+(i<3?i+1:i),sup?'#8fd3bf':'#d4a85a');lab.position.y=2.25;g.add(lab);
+  const lab=labelSprite(roleLabel(i),sup?'#8fd3bf':'#d4a85a');lab.position.y=2.25;g.add(lab);
   g.userData={i,mixer,acts,ring,lab,col,prev:new THREE.Vector3(),speed:0,w:{Idle:1,Walk:0,Run:0}};
   return g;}
 function buildParty(model){party.forEach(p=>scene.remove(p));party=[];for(let i=0;i<8;i++){const p=partyMember(i,model);scene.add(p);party.push(p);}partyReady=true;if(sim)apply();}

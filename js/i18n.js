@@ -10,7 +10,7 @@ const DICT=window.I18N_DICT||{},PAT=window.I18N_PAT||[],TITLES=window.I18N_TITLE
 const IDX={en:0,zh:1},ATTRS=['placeholder','aria-label','title','alt'];
 const LS='belg_lang';
 function initial(){
-  try{const q=new URLSearchParams(location.search).get('lang');if(q&&/^(ru|en|zh)$/.test(q))return q;}catch(e){}
+  try{let q=(new URLSearchParams(location.search).get('lang')||'').toLowerCase();if(q=='cn'||q=='zh-cn')q='zh';if(/^(ru|en|zh)$/.test(q))return q;}catch(e){}
   try{const s=localStorage.getItem(LS);if(s&&/^(ru|en|zh)$/.test(s))return s;}catch(e){}
   const n=(navigator.language||'ru').toLowerCase();
   return n.startsWith('zh')?'zh':/^(ru|uk|be|kk)/.test(n)?'ru':n.startsWith('ko')?'en':/^(en|de|fr|es|pt|it|pl|ja)/.test(n)?'en':'ru';

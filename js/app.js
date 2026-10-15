@@ -37,8 +37,8 @@ document.addEventListener('click',e=>{
 });
 /* clips play on hover (desktop) and lazy-load their source */
 function prime(v){if(v&&!v.src&&v.dataset.src)v.src=v.dataset.src;return v;}
-document.addEventListener('pointerover',e=>{const f=e.target.closest('.shot');if(f&&e.pointerType=='mouse'){const v=prime(f.querySelector('video'));v.play().catch(()=>{});}});
-document.addEventListener('pointerout',e=>{const f=e.target.closest('.shot');if(f&&!f.contains(e.relatedTarget))f.querySelector('video').pause();});
+document.addEventListener('pointerover',e=>{const f=e.target.closest('.shot');if(f&&e.pointerType=='mouse'&&f.querySelector('video')){const v=prime(f.querySelector('video'));v.play().catch(()=>{});}});
+document.addEventListener('pointerout',e=>{const f=e.target.closest('.shot');if(f&&!f.contains(e.relatedTarget)&&f.querySelector('video'))f.querySelector('video').pause();});
 
 /* ================= difficulty ================= */
 let D=store.get('diff','H');

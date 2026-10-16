@@ -62,6 +62,12 @@ bash nnew/models/src/build.sh belgardin
 
 Each build writes the `.glb` and `.blend` files and fills `preview/` with Workbench renders plus a `*_sheet.jpg` contact sheet. Edit the pose functions to tweak an animation and the mesh section to tweak the shape, then rerun the build. The attack timelines are in `ATTACKS` in `belgardin.py` / `kragma.py` as (start, duration, move) entries, and the moves (`m_swing`, `m_lash`, `m_fan` … / `strike`, `sweep`, `grab` …) are defined just above.
 
+**On the site.** `js/arena.js` loads the bosses and arenas from `js/glb/*.js` (base64, because the page runs from `file://`), one gate at a time. Until a model loads, the procedural boss and arena stay on screen. After rebuilding a GLB, re-embed it and bump `GLBV` in `js/arena.js`:
+
+```bash
+python nnew/models/src/embed.py
+```
+
 Viewer: `viewer.html?m=belgardin|kragma`. It needs an http server (the `grimoire` launch config), not `file://`.
 
 References: `nnew/references/1` (Belgardin) and `nnew/references/2` (Kragma).

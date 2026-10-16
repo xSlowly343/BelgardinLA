@@ -34,8 +34,8 @@ M = dict(
 SKY = [(e, material(f'NSky{k}', c, 1., emit=c, strength=1.)) for k, (e, c) in enumerate(
     [(-10, (.02, .008, .035)), (2, (.07, .03, .12)), (8, (.14, .05, .18)), (16, (.17, .06, .2)), (26, (.13, .05, .19)),
      (40, (.08, .04, .16)), (60, (.045, .025, .1)), (90, (.02, .012, .05))])]
-RIDGES = [(1.2, .12, .06), (2.0, .18, .08), (3.0, .12, .05), (4.5, .3, .1), (6.0, .22, .08), (7.1, .12, .05), (8.0, .22, .08),
-          (9.0, .14, .05), (10.3, .3, .1)]                       # (radius, width, height) carved concentric ridges
+RIDGES = [(1.2, .12, .016), (2.0, .18, .02), (3.0, .12, .014), (4.5, .3, .025), (6.0, .22, .02), (7.1, .12, .014), (8.0, .22, .02),
+          (9.0, .14, .014), (10.3, .3, .025)]                    # (radius, width, height) carved ridges; kept under 0.03 = arena.js telegraph height
 RUNES = [(4.5, .1), (9.55, .12)]                                 # glowing rune rings (radius, width)
 RADIALS = [i / 24 * TAU for i in range(24)]                      # radial grooves between r 3 and the edge
 
@@ -76,8 +76,8 @@ for k in range(8):
     zone(C, 0, 6, k / 8 * TAU, (k + 1) / 8 * TAU, 2.5, k)
 cyl(C, 6, 1.2, -.9, -10, M['under'], 16, cap=True, jitter=.35, seed=3)
 cyl(C, 3.5, .2, -6, -15, M['under'], 9, cap=True, jitter=.5, seed=4)
-cyl(C, .9, .95, 0, .14, M['ridge'], 24)
-ring_strip(C, .7, .08, .15, M['rune'], 32)
+cyl(C, .9, .95, 0, .022, M['ridge'], 24)
+ring_strip(C, .7, .08, .026, M['rune'], 32)
 objs.append(C.build('core'))
 # middle ring 6–8 and outer ring 8–10.5: separate chunks with uneven seams
 for name, r0, r1, n, depth in (('mid', 6, 8, 8, 3.5), ('outer', 8, 10.5, 10, 4.5)):

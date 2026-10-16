@@ -124,9 +124,9 @@ for k in range(6):  # hooded statues on plinths, facing the platform
         a += .5
         x, y = math.cos(a) * rr, math.sin(a) * rr
     hooded(G, x, y, height_at(x, y, -.9, .6, 3.), a + math.pi / 2, M['grave'], M['crypt'], rnd, h=3.2, arms=None)
-for k in range(18):  # dead trees
+for k in range(18):  # dead trees, kept beyond the arena camera's orbit (dist 23, el 48°) so they don't block the view
     a = rnd.random() * TAU
-    rr = 14 + rnd.random() ** .7 * 26
+    rr = 21 + rnd.random() ** .7 * 20
     x, y = math.cos(a) * rr, math.sin(a) * rr
     if (V((x, y)) - CRYPT).length < 7:
         continue

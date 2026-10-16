@@ -288,6 +288,36 @@ function loadModel(){
     new THREE.GLTFLoader().parse(bin,'',gl=>{const box=new THREE.Box3().setFromObject(gl.scene),h=box.max.y-box.min.y||1.8;buildParty({scene:gl.scene,anims:gl.animations,scale:1.75/h});},e=>{console.warn('model',e);buildParty(null);});}
   catch(e){console.warn(e);buildParty(null);}}
 
+/* ================= GLB bosses & arenas (built in nnew/models, embedded as js/glb/*.js) =================
+   Loaded per gate on first use; the procedural boss/arena above stays as the fallback until (or unless) the GLB loads.
+   Boss clips: the clip named after the sim key (same duration) plays in sync with T; otherwise the sim's actions map to
+   the capitalised action clips (Swing, Slam, …), otherwise Idle. Arena 2's outer/mid floor chunks fall with 'void' rings. */
+const GLBV=2,glbP={},glbReq={};
+function glbData(key){return new Promise((res,rej)=>{const D=window.GLB_DATA||{};if(D[key])return res(D[key]);
+  const s=document.createElement('script');s.src='js/glb/'+key+'.js?v='+GLBV;s.async=true;
+  s.onload=()=>{const d=(window.GLB_DATA||{})[key];d?res(d):rej(new Error('empty '+key));};s.onerror=()=>rej(new Error('missing '+key));document.head.appendChild(s);});}
+function glbLoad(key){return glbP[key]||(glbP[key]=glbData(key).then(b64=>{const str=atob(b64),u=new Uint8Array(str.length);for(let i=0;i<str.length;i++)u[i]=str.charCodeAt(i);
+  delete window.GLB_DATA[key];return new Promise((res,rej)=>new THREE.GLTFLoader().parse(u.buffer,'',res,rej));}));}
+function glbBoss(B,gl){const m=gl.scene;B.children.forEach(c=>c.visible=false);m.rotation.y=Math.PI;m.scale.setScalar(1/B.scale.x);
+  m.traverse(o=>{if(o.isMesh){o.castShadow=true;o.frustumCulled=false;}});B.add(m);
+  const mixer=new THREE.AnimationMixer(m),C={};gl.animations.forEach(a=>{const ac=mixer.clipAction(a);ac.play();ac.paused=true;ac.setEffectiveWeight(0);C[a.name]=ac;});
+  B.userData.glb={mixer,C};if(sim)apply();}
+function glbPose(B,t){const {mixer,C}=B.userData.glb;let n='Idle',ct=C.Idle?t%C.Idle.getClip().duration:0;
+  if(C[simKey]){n=simKey;ct=Math.min(t,C[n].getClip().duration-1e-3);}
+  else sim.act.forEach(([s0,a,d])=>{const k=a[0].toUpperCase()+a.slice(1);if(t>=s0&&t<=s0+d&&C[k]){n=k;ct=(t-s0)/d*C[k].getClip().duration;}});
+  for(const k in C){C[k].setEffectiveWeight(k==n?1:0);if(k==n)C[k].time=ct;}mixer.update(0);}
+function glbArena(E,gl,g2){const keep=new Set([...(E.userData.shafts||[]),...(g2?E.userData.fog||[]:fogLayers)]);
+  E.children.forEach(c=>{if(!c.isLight&&!keep.has(c))c.visible=false;});
+  const a=gl.scene,chunks=[];a.traverse(o=>{if(!o.isMesh)return;const top=o.parent&&o.parent!==a?o.parent:o;
+    o.receiveShadow=/^(platform|inlays|core|mid_|outer_)/.test(top.name);o.castShadow=false;if(/^(sky|void)$/.test(top.name))o.material.fog=false;});
+  a.children.forEach(o=>{const mm=/^(mid|outer)_/.exec(o.name);if(mm)chunks.push({o,r0:mm[1]=='mid'?6:8,y:o.position.y});});
+  E.add(a);E.userData.glb=a;E.userData.chunks=chunks;if(sim&&(sim.g==2)==g2){floorMesh.visible=false;apply();}}
+function glbGate(g2){const k=g2?'B':'A';if(glbReq[k]||!THREE.GLTFLoader)return;glbReq[k]=1;
+  glbLoad(g2?'kragma':'belgardin').then(gl=>glbBoss(g2?bossB:bossA,gl)).catch(e=>console.warn('boss glb',e));
+  glbLoad(g2?'arena2':'arena1').then(gl=>glbArena(g2?envB:envA,gl,g2)).catch(e=>console.warn('arena glb',e));}
+function glbCollapse(E,t){if(!E.userData.chunks)return;const vs=objs.filter(o=>o.it.k=='void'&&o.it.ring&&t>=o.it.t0);
+  E.userData.chunks.forEach(c=>{const v=vs.find(o=>c.r0>=(o.it.r0||0)-.01);const p=v?Math.min(1,(t-v.it.t0)/1.6):0;c.o.position.y=c.y-p*p*16;c.o.visible=p<1;});}
+
 /* ================= init ================= */
 function init(){
   if(!window.THREE){$('#simCap').textContent='three.js не загрузился — 3D-схема недоступна, остальная памятка работает.';return false;}
@@ -435,7 +465,7 @@ function setLighting(g2){const U=scene.userData,m=U.moon,h=U.hemi,f=U.fill,rl=U.
 function buildSim(key){
   if(!scene||!SIMS[key])return;clearSim();sim=SIMS[key];simKey=key;T=0;lastT=0;
   const g2=sim.g==2;bossA.visible=!g2;bossB.visible=g2;envA.visible=!g2;envB.visible=g2;clockA.visible=!g2&&showClock;clockB.visible=g2&&showClock;
-  floorMesh.material=g2?floorB:floorA;setLighting(g2);
+  floorMesh.material=g2?floorB:floorA;floorMesh.visible=!(g2?envB:envA).userData.glb;setLighting(g2);glbGate(g2);
   scene.fog.color.setHex(g2?0x150914:0x111017);scene.fog.density=g2?.016:.02;R.setClearColor(g2?0x120a1a:0x0d0b10,1);
   if(sim.cam&&camMode=='orbit'){if(!camSaved)camSaved=[el,az];el=sim.cam.el;az=sim.cam.az;}else if(camSaved&&!sim.cam){[el,az]=camSaved;camSaved=null;}
   let y=.03;
@@ -568,7 +598,8 @@ function burstAt(x,z,col,n){const N=n||36,pos=new Float32Array(N*3),vel=[];for(l
 function apply(){
   if(!sim||!scene)return;const t=T,g2=sim.g==2,B=g2?bossB:bossA;
   const bs=lerpKeys(sim.boss.map(k=>[k[0],k[1],k[2],k[3]]),t);let hid=0;for(const k of sim.boss)if(t>=k[0])hid=k[4]||0;
-  g2?poseB(t):poseA(t);
+  if(B.userData.glb){glbPose(B,t);B.userData.spin=0;}else g2?poseB(t):poseA(t);
+  glbCollapse(g2?envB:envA,t);
   B.position.set(bs[0],0,bs[1]);B.rotation.y=-bs[2]*deg+(B.userData.spin||0);B.visible=!hid;B.userData.head=bs[2];
   const hp=dir(bs[2],2.6);arrow.position.set(bs[0]+hp[0],.07,bs[1]+hp[1]);arrow.rotation.y=-bs[2]*deg;arrow.visible=!hid;
   const fly=objs.find(o=>o.it.k=='flyparty'&&t>=o.it.t0&&t<=o.it.t2);

@@ -1,3 +1,9 @@
 # local tooling and the single-file build (173 MB, over GitHub's 100 MB file limit)
 .claude/
 belgardin-grimoire.html
+# boss/arena build outputs that nnew/models/src rebuilds (blend files, per-frame preview renders)
+nnew/models/*.blend
+nnew/models/*.blend1
+nnew/models/preview/belgardin_*.png
+nnew/models/preview/kragma_*.png
+__pycache__/

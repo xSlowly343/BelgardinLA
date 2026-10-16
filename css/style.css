@@ -50,6 +50,8 @@ p{margin:0}
 .author{display:inline-flex;align-items:center;gap:6px;font:600 .8rem var(--f-body);color:#b9c0ff;text-decoration:none;padding:6px 10px;border:1px solid color-mix(in srgb,#5865f2 50%,var(--line));border-radius:999px;background:color-mix(in srgb,#5865f2 14%,transparent);white-space:nowrap;transition:background .2s,transform .2s}
 .author:hover{background:color-mix(in srgb,#5865f2 30%,transparent);transform:translateY(-1px)}
 .author.big{font-size:1rem;padding:9px 16px}
+.cheat{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;font:600 .8rem var(--f-body);color:#f0d9a6;text-decoration:none;padding:6px 12px;border:1px solid color-mix(in srgb,var(--gold,#d4a85a) 55%,var(--line));border-radius:999px;background:linear-gradient(180deg,color-mix(in srgb,#d4a85a 22%,transparent),color-mix(in srgb,#d4a85a 8%,transparent));box-shadow:0 0 14px -6px rgba(212,168,90,.7);white-space:nowrap;transition:background .2s,transform .2s,box-shadow .2s}
+.cheat:hover{background:color-mix(in srgb,#d4a85a 32%,transparent);box-shadow:0 0 18px -4px rgba(212,168,90,.85);transform:translateY(-1px)}
 .diff{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex:0 0 auto}
 .diff button{font:700 .74rem var(--f-mono);letter-spacing:.06em;background:none;border:0;color:var(--muted);padding:7px 9px;cursor:pointer}
 .diff button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
@@ -376,6 +378,7 @@ label.f input,label.f select{background:var(--bg);color:var(--ink);border:1px so
 @media (max-width:640px){
   :root{--navh:52px}
   .brand span{display:none}
+  .cheat{padding:6px 8px}.cheat span{display:none}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .tl{padding-left:62px}.tl::before{left:46px}.tl-bar{left:-66px;width:42px;font-size:.8rem}
   .caption{bottom:30px;font-size:.8rem}

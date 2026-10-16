@@ -22,7 +22,7 @@
 <link rel="alternate" hreflang="zh-CN" href="https://xslowly343.github.io/BelgardinLA/cn/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700;800&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
-<link rel="stylesheet" href="css/style.css?v=12">
+<link rel="stylesheet" href="css/style.css?v=13">
 </head>
 <body>
 
@@ -40,6 +40,7 @@
     <nav class="nav" id="nav">
       <a href="#phases">Фазы</a><a href="#arena-sec">3D-арена</a><a href="#g1">Врата I</a><a href="#g2">Врата II</a><a href="#calc">Калькуляторы</a><a href="#loot">Награды</a><a href="#src">Источники</a>
     </nav>
+    <a class="cheat" id="cheatLink" href="cheatsheet/index.html" title="Шпаргалка: обе врата на одной картинке"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M6 3h9l4 4v14H6z M15 3v4h4 M9 11h7 M9 14.5h7 M9 18h4"/></svg><span>Шпаргалка</span></a>
     <div class="lang" role="group" aria-label="Язык" translate="no"><i aria-hidden="true"></i><button type="button" data-l="ru" aria-pressed="true" title="Русский">RU</button><button type="button" data-l="en" aria-pressed="false" title="English">EN</button><button type="button" data-l="zh" aria-pressed="false" title="简体中文">CN</button></div>
     <a class="author" href="https://discord.com/users/346621596125102083" target="_blank" rel="noopener" title="Автор в Discord"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M20.3 4.4A19.6 19.6 0 0 0 15.4 3l-.6 1.3a18 18 0 0 0-5.6 0L8.6 3a19.6 19.6 0 0 0-4.9 1.4C.6 9 0 13.6.3 18.1a19.8 19.8 0 0 0 6 3l1.3-2a12.8 12.8 0 0 1-2-1l.5-.4a14 14 0 0 0 11.8 0l.5.4-2 1 1.3 2a19.7 19.7 0 0 0 6-3c.4-5.2-.7-9.7-3.1-13.7ZM8.5 15.4c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm7 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Z"/></svg><span>xSlowly</span></a>
     <div class="diff" role="group" aria-label="Сложность">
@@ -437,8 +438,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/soldier-glb.js"></script>
-<script src="js/i18n-dict.js?v=3"></script>
-<script src="js/i18n.js?v=4"></script>
+<script src="js/i18n-dict.js?v=4"></script>
+<script src="js/i18n.js?v=5"></script>
+<script>document.getElementById('cheatLink').addEventListener('click',function(){this.href='cheatsheet/index.html?lang='+(window.LANG||'ru');});</script>
 <script src="js/data.js?v=9"></script>
 <script src="js/app.js?v=10"></script>
 <script src="js/arena.js?v=27"></script>

@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Belgardin Cheat Sheet</title>
+<meta name="description" content="Шпаргалка по Shadow Raid Belgardin (Lost Ark): механики HP-полос обоих врат на одной картинке. RU · EN · 中文.">
+<meta name="author" content="xSlowly">
+<meta name="theme-color" content="#d4a85a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Golos+Text:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0b10;--panel:#17141c;--panel2:#1e1a24;--line:#2f2a37;
+  --ink:#ece5d7;--muted:#a39b8f;--dim:#776f80;
+  --gold:#d4a85a;--rose:#e2a6b4;
+  --g1:#a98bff;--g1b:#5f4aa8;--g2:#e0614f;--g2b:#8e2f2a;
+  --jg:#f2d15c;--ct:#5fc6ff;--death:#ff5f73;--safe:#66d29e;--grab:#c08cff;--hm:#f2994a;
+  --fd:'Oswald','Noto Sans SC','Noto Sans CJK SC',sans-serif;
+  --fb:'Golos Text','Noto Sans SC','Noto Sans CJK SC',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:var(--fb);-webkit-font-smoothing:antialiased}
+html[lang=zh-CN] body{--fb:'Noto Sans SC','Noto Sans CJK SC',system-ui,sans-serif}
+
+/* ---------- toolbar (hidden when rendering PNG) ---------- */
+.bar{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;
+  padding:10px 16px;background:rgba(13,11,16,.92);border-bottom:1px solid var(--line);font:500 14px var(--fb)}
+.bar a,.bar button{color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:6px 14px;
+  font:inherit;cursor:pointer;text-decoration:none}
+.bar button[aria-pressed=true]{background:var(--gold);color:#1a1408;border-color:var(--gold)}
+.bar .sp{flex:0 0 12px}
+html.print .bar{display:none}
+.wrap{overflow:auto}
+
+/* ---------- sheet ---------- */
+.sheet{position:relative;width:2400px;margin:0 auto;padding:30px 44px 26px;overflow:hidden;
+  background:
+   radial-gradient(1200px 700px at 50% -10%,rgba(169,139,255,.10),transparent 60%),
+   radial-gradient(900px 600px at 100% 0,rgba(224,97,79,.10),transparent 60%),
+   linear-gradient(#141118,#0d0b10 40%)}
+.sheet::before,.sheet::after{content:"";position:absolute;top:0;height:470px;width:900px;background-size:cover;opacity:.55;pointer-events:none}
+.sheet::before{left:0;background-image:url(../img/boss/belgardin.jpg);background-position:30% 22%;
+  -webkit-mask:linear-gradient(90deg,#000 10%,transparent 85%),linear-gradient(#000 35%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}
+.sheet::after{right:0;background-image:url(../img/boss/phetus.jpg);background-position:60% 30%;
+  -webkit-mask:linear-gradient(270deg,#000 10%,transparent 85%),linear-gradient(#000 35%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}
+.sheet>*{position:relative;z-index:1}
+
+.top{text-align:center;margin-bottom:6px}
+.top .kick{font:500 15px var(--fd);letter-spacing:.32em;text-transform:uppercase;color:var(--muted)}
+.top h1{margin:2px 0 0;font:600 50px/1.05 var(--fd);letter-spacing:.02em;color:var(--rose);text-shadow:0 2px 24px rgba(0,0,0,.6)}
+.top h1 b{color:var(--ink);font-weight:600}
+.diffs{display:flex;justify-content:center;gap:16px;margin-top:14px}
+.diff{display:flex;align-items:center;gap:12px;padding:8px 18px 8px 14px;border:1.5px solid;border-radius:10px;background:rgba(16,13,20,.78)}
+.diff .ico{width:22px;height:22px;opacity:.9}
+.diff .n{font:600 18px/1 var(--fd);letter-spacing:.06em;text-transform:uppercase}
+.diff .il{font:600 28px/1 var(--fd);color:var(--ink)}
+.diff .gd{font:500 14px/1.2 var(--fb);color:var(--muted);text-align:left;border-left:1px solid var(--line);padding-left:12px}
+.diff .gd b{color:var(--gold);font-weight:600}
+.d-n{border-color:#4fa3d8}.d-n .n{color:#5cb8f0}
+.d-h{border-color:#d9773e}.d-h .n{color:#f08a4b}
+.d-nm{border-color:#c057c8}.d-nm .n{color:#e070e8}
+
+.gates{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:4px}
+.ghead{display:flex;align-items:center;gap:22px;padding:6px 10px 0}
+.g2 .ghead{flex-direction:row-reverse;text-align:right}
+.gbadge{flex:none;width:104px;height:104px;display:grid;place-items:center;position:relative}
+.gbadge::before{content:"";position:absolute;inset:14px;transform:rotate(45deg);border:2px solid var(--acc);background:rgba(20,17,25,.9);border-radius:6px;box-shadow:0 0 22px rgba(0,0,0,.6)}
+.gbadge span{position:relative;text-align:center;font:600 30px/1 var(--fd)}
+.gbadge small{display:block;font:500 15px/1.3 var(--fd);color:var(--muted);margin-top:3px}
+.gname{font:600 36px/1.05 var(--fd);color:var(--gold);letter-spacing:.02em;text-transform:uppercase}
+.gtags{font:500 19px/1.3 var(--fd);letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
+.ghp{font:400 11.5px/1.4 var(--fb);color:var(--dim);margin-top:4px;display:flex;gap:14px}
+.g2 .ghp{justify-content:flex-end}
+.ghp i{font-style:normal;padding-left:8px;border-left:2px solid var(--acc2)}
+.g1{--acc:var(--g1);--acc2:var(--g1b)}
+.g2{--acc:var(--g2);--acc2:var(--g2b)}
+
+.orn{display:flex;align-items:center;gap:0;margin:12px 0 10px}
+.orn .ln{flex:1;height:2px;background:linear-gradient(90deg,transparent,var(--acc) 30%,var(--acc) 70%,transparent);opacity:.55}
+.orn .lbl{font:600 17px var(--fd);letter-spacing:.14em;text-transform:uppercase;padding:4px 16px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);margin:0 14px;white-space:nowrap}
+.orn .lbl em{font-style:normal;color:var(--acc)}
+.orn .dia{width:16px;height:16px;transform:rotate(45deg);border:2px solid var(--acc);background:var(--bg);flex:none}
+
+.items{display:grid;grid-template-columns:auto repeat(5,1fr);gap:8px;margin:0 0 12px;align-items:stretch}
+.items .ih{display:flex;flex-direction:column;justify-content:center;padding:0 10px 0 4px;font:600 15px/1.15 var(--fd);letter-spacing:.12em;text-transform:uppercase;color:var(--acc)}
+.items .ih small{display:block;font:400 10.5px/1.3 var(--fb);letter-spacing:0;text-transform:none;color:var(--dim);margin-top:3px;max-width:110px}
+.it{display:flex;gap:9px;align-items:center;padding:7px 9px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.it.opt{border-style:dashed}
+.it .ic{flex:none;width:42px;height:42px;border-radius:7px;border:1.5px solid #8a6a52;background:#211b28;display:grid;place-items:center;overflow:hidden}
+.it .ic img{width:100%;height:100%;object-fit:cover}
+.it .ic svg{width:30px;height:30px}
+.it b{display:block;font:600 12.8px/1.15 var(--fb);color:var(--ink)}
+.it span{display:block;font:400 12px/1.3 var(--fb);color:var(--muted);margin-top:1px}
+.it span em{font-style:normal;font-weight:600}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.col{position:relative;background:linear-gradient(180deg,var(--panel),#141118);border:1px solid var(--line);border-radius:26px;padding:22px 20px 14px 76px}
+.col::before{content:"";position:absolute;left:36px;top:30px;bottom:28px;width:5px;border-radius:5px;
+  background:linear-gradient(var(--acc),var(--acc2) 60%,rgba(0,0,0,0))}
+
+.sec{position:relative;margin-bottom:20px}
+.sec:last-child{margin-bottom:4px}
+.num{position:absolute;color:var(--ink);left:-62px;top:-1px;min-width:50px;height:34px;padding:0 6px;display:grid;place-items:center;
+  font:600 21px/1 var(--fd);color:var(--ink);background:#141118;border:2px solid var(--acc);border-radius:9px;box-shadow:0 0 0 4px #17141c}
+.num svg{width:20px;height:20px}
+.sec h3{margin:0 0 6px;font:500 25px/1.15 var(--fd);color:var(--ink);letter-spacing:.01em;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.sec h3 .ko{font:400 13px var(--fb);color:var(--dim);letter-spacing:0}
+.sec h3 .tag{font:600 12px/1 var(--fb);letter-spacing:.04em;text-transform:uppercase;color:var(--acc);border:1px solid var(--acc);border-radius:5px;padding:3px 6px;align-self:center}
+.lead{margin:0 0 4px;font:400 14px/1.4 var(--fb);color:var(--muted)}
+.body{display:flex;gap:14px;align-items:flex-start}
+.txt{flex:1;min-width:0}
+.fig{flex:none;width:180px;display:flex;flex-direction:column;gap:8px}
+.fig.w{width:225px}
+
+ul{list-style:none;margin:0;padding:0}
+li{position:relative;padding-left:14px;font:400 14.2px/1.4 var(--fb);color:#ddd5c8;margin:1px 0}
+li::before{content:"";position:absolute;left:2px;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--muted)}
+li.hm{color:var(--hm);font-weight:600}
+li.hm::before{background:var(--hm)}
+li.st{color:var(--ink);font-weight:600;margin-top:5px;padding-left:0}
+li.st::before{display:none}
+li.st u{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+li ul{margin:1px 0 2px}
+li li{padding-left:13px;font-size:13.6px}
+li li::before{width:6px;height:1.5px;border-radius:0;top:.72em;background:var(--dim)}
+li b{color:var(--ink);font-weight:600}
+html[lang=zh-CN] li{font-size:14.4px;line-height:1.45}
+
+j{color:var(--jg);font-weight:600}
+k{color:var(--ct);font-weight:600}
+x{color:var(--death);font-weight:600}
+s{color:var(--safe);font-weight:600;text-decoration:none}
+v{color:var(--grab);font-weight:600}
+o{color:var(--hm);font-weight:600}
+
+figure{margin:0;position:relative}
+figure img{display:block;width:100%;border-radius:6px;border:1px solid #3a3443;aspect-ratio:16/10;object-fit:cover}
+figure.tall img{aspect-ratio:4/3}
+figcaption{font:500 11.5px/1.3 var(--fb);color:var(--muted);text-align:center;margin-top:3px}
+figure .ov{position:absolute;left:6px;top:5px;font:600 11px var(--fb);background:rgba(10,8,12,.8);padding:2px 6px;border-radius:4px;color:var(--ink)}
+.dg{display:block;width:100%;height:auto}
+.dgrow{display:flex;gap:6px}
+.dgrow figure{flex:1}
+
+.foot{display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center;margin-top:16px;padding:12px 18px;border:1px solid var(--line);border-radius:14px;background:rgba(23,20,28,.8);font:400 12.5px/1.45 var(--fb);color:var(--muted)}
+.legend{display:flex;gap:16px;flex-wrap:wrap}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.foot .cr{text-align:right}
+.foot .cr b{color:var(--gold);font-weight:600}
+.foot .mid{text-align:center}
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<div class="wrap"><div class="sheet" id="sheet"></div></div>
+
+<script>
+"use strict";
+/* Belgardin cheat sheet — content from the Grimoire (js/data.js + i18n-dict.js): Inven 110616/110652/110620/3976005, Arca 179073928/179011733.
+   Inline tags: <j>Just Guard</j> <k>counter</k> <x>death/wipe</x> <s>safe/positions</s> <v>grab</v> <o>H/NM</o>. */
+const L=(ru,en,zh,c)=>({ru,en,zh,c});
+const ST=(ru,en,zh)=>L(ru,en,zh,'st');
+const HM=(ru,en,zh)=>L(ru,en,zh,'hm');
+const SUB=(head,items)=>Object.assign(head,{sub:items});
+
+const UI={
+  kick:L('Lost Ark · KR · 8 игроков · 2 врат','Lost Ark · KR · 8 players · 2 gates','失落的方舟 · 韩服 · 8人 · 2门'),
+  title:L('Теневой рейд: <b>Белгардин</b>','Shadow Raid: <b>Belgardin</b>','暗影团本：<b>贝尔加丁</b>'),
+  diff:{n:L('Normal','Normal','普通'),h:L('Hard','Hard','困难'),nm:L('Nightmare','Nightmare','噩梦')},
+  gold:L('золото','gold','金币'),
+  g1name:L('Белгардин','Belgardin','贝尔加丁'),
+  g1tags:L('Human · слабость Holy · 300 полос','Human · weak to Holy · 300 bars','人类 · 弱点：神圣 · 300管'),
+  g1place:L('Sanctuary of Holy Rest','Sanctuary of Holy Rest','圣息墓园'),
+  g2name:L('Phetus an Kragma','Phetus an Kragma','佩图斯·安·克拉格玛'),
+  g2tags:L('Ancient · слабость Holy · Chaktum','Ancient · weak to Holy · Chaktum','古代 · 弱点：神圣 · 查克图姆'),
+  g2place:L("Kragma's Field of Annihilation","Kragma's Field of Annihilation",'克拉格玛的湮灭之地'),
+  gate:L('Врата','Gate','门'),
+  fm:L('Механики боя','Fight Mechanics','战斗机制'),
+  hp:L('HP','HP','HP'),
+  legend:[
+    ['var(--jg)',L('Just Guard (JG)','Just Guard (JG)','精准防御 (JG)')],
+    ['var(--ct)',L('Контра','Counter','反击')],
+    ['var(--death)',L('Смерть / вайп','Death / wipe','即死 / 团灭')],
+    ['var(--safe)',L('Безопасно / позиции','Safe / positions','安全 / 站位')],
+    ['var(--grab)',L('Захват','Grab','抓取')],
+    ['var(--hm)',L('Hard / Nightmare','Hard / Nightmare','困难 / 噩梦')]],
+  credit:L('Гримуар Белгардина · <b>xSlowly</b> · xslowly343.github.io/BelgardinLA','Grimoire of Belgardin · <b>xSlowly</b> · xslowly343.github.io/BelgardinLA','贝尔加丁魔典 · <b>xSlowly</b> · xslowly343.github.io/BelgardinLA'),
+  src:L('Источники: Inven, Arca.live (в т.ч. расходка), патчноут Lost Ark (KR, 5 авг 2026). Схемы сняты в основном на NM — на N/H отличия возможны.',
+        'Sources: Inven, Arca.live (incl. battle items), Lost Ark patch notes (KR, Aug 5, 2026). Diagrams mostly from NM — N/H may differ.',
+        '资料来源：Inven、Arca.live（含战斗道具）、失落的方舟更新公告（韩服，2026年8月5日）。示意图多为噩梦难度，普通/困难可能有差异。'),
+  save:L('Скачать PNG','Download PNG','下载 PNG'),
+  back:L('← К гримуару','← Back to the Grimoire','← 返回魔典'),
+  fit:L('По ширине','Fit width','适应宽度'),
+  full:L('1:1','1:1','1:1'),
+};
+
+/* ---------------- GATE I ---------------- */
+const G1A=[
+ {n:'fm',t:UI.fm,items:[
+   ST('<u>Insight-атаки</u> (с 240)','<u>Insight attacks</u> (from 240)','<u>看破攻击</u>（240管起）'),
+   L('Глитч экрана + фиолетовый пол = Insight','Screen glitch + purple floor = Insight','屏幕闪烁 + 紫色地面 = 看破'),
+   SUB(L('Руки пустые → пробел <b>позже</b>, когда босс поднимает руку','Bare hands → spacebar <b>late</b>, as he raises his hand','空手 → 首领抬手时<b>稍晚</b>按空格'),[
+     L('Внутри — <k>кооп-контра</k> (нужно 3+), провал — удар по всей арене','Inside — <k>co-op counter</k> (3+ needed); fail = arena-wide hit','内部——<k>协同反击</k>（需3人以上），失败则全场重击')]),
+   SUB(L('Клинок в руке → пробел <b>сразу</b>','Blade in hand → spacebar <b>immediately</b>','手持利刃 → <b>立刻</b>按空格'),[
+     L('Внутри <j>Holding JG</j>: зажать по стрелке, когда заливка почти полная','Inside: <j>Holding JG</j> along the arrow when the fill is almost full','内部：填充快满时按箭头方向<j>持续精准防御</j>'),
+     L('Не вошёл — <x>почти смерть</x>: в центр, саппорт сразу даёт щит','Not inside = <x>near-death</x>: stack mid, support shields at once','没进去 = <x>几乎即死</x>：集合中间，辅助立刻开盾')]),
+   HM('N/H — глаза вспыхивают красным; NM — только по анимации','N/H — eyes flash red; NM — animation only','普通/困难——眼睛红光提示；噩梦——只能看动作'),
+   ST('<u>Прочее</u>','<u>Also</u>','<u>其他</u>'),
+   L('<b>Medusa</b>: чёрный пол или чакрам <b>растёт</b> → <x>отвернись</x>','<b>Medusa</b>: black floor or chakram <b>grows</b> → <x>look away</x>','<b>美杜莎</b>：地面变黑或轮刃<b>变大</b> → <x>背对</x>'),
+   L('Шары в обеих руках = <j>Holding JG</j>; медленный <j>JG</j> — только для выдержавших','Orbs in both hands = <j>Holding JG</j>; the slow <j>JG</j> is only for those who held','双手持球 = <j>持续精准防御</j>；慢速<j>JG</j>仅限坚持住的人'),
+   HM('H/NM: особые атаки дают стаки Seeping Chaos — на NM 6 стаков = смерть','H/NM: special attacks give Seeping Chaos stacks — 6 on NM = death','困难/噩梦：特殊攻击叠加渗透混沌——噩梦6层即死'),
+  ],fig:[{img:'../img/screens/insightbare-2.jpg',cap:L('Insight — фиолетовый пол','Insight — purple floor','看破——紫色地面')},
+         {img:'../img/screens/medusa-1.jpg',cap:L('Medusa — отвернись','Medusa — look away','美杜莎——背对')}]},
+ {n:'300',t:L('Пул','Pull','开怪'),items:[
+   L('Почти всегда первым — <b>Opening Flurry</b>','<b>Opening Flurry</b> almost always comes first','几乎总是先出<b>Opening Flurry</b>'),
+   L('Спереди зона урона, вокруг лужи со стаггером','Damage zone in front, stagger puddles around','正面伤害区域，周围有硬直地板'),
+   L('Бей <s>со спины</s>; фронт — только под щитом саппорта','Hit <s>from behind</s>; the front only under a support shield','<s>从背后</s>输出；正面只在辅助护盾下'),
+ ]},
+ {n:'240',t:L('Водоросли','Seaweed Tentacles','水草触手'),ko:'미역줄기',items:[
+   L('Кат-сцена, по краю — вихрь <b>Necromancer’s Curse</b>','Cutscene, a <b>Necromancer’s Curse</b> vortex rises at the edge','过场动画，边缘升起<b>死灵法师的诅咒</b>漩涡'),
+   L('1-й <j>JG</j> — когда плащ босса «сжимается»','1st <j>JG</j> — when the boss’s cloak “tightens”','第1次<j>JG</j>——首领披风“收紧”时'),
+   L('«Водоросли» режут арену на куски: первым взрывается кусок, появившийся первым — <s>после взрыва уходи в него</s>','“Seaweed” cuts the arena into slices: the first slice drawn explodes first — <s>step into it after it blows</s>','“水草”把场地切成块：最先出现的块最先爆炸——<s>爆炸后走进去</s>'),
+   L('Гробы на 1/5/7/11: <k>контра</k> или <j>JG</j> — смотри на гроб','Coffins at 1/5/7/11: <k>counter</k> or <j>JG</j> — read the coffin','1/5/7/11点棺材：<k>反击</k>或<j>JG</j>——看棺材'),
+   L('Финал: <j>JG</j> босса → <j>JG</j> гроба','Finish: boss <j>JG</j> → coffin <j>JG</j>','收尾：首领<j>JG</j> → 棺材<j>JG</j>'),
+   HM('NM: 1-я серия взрывов 5 → 11 → 7 ч, 2-я — случайная','NM: 1st blast series 5 → 11 → 7 o’clock, 2nd is random','噩梦：第1轮爆炸5 → 11 → 7点，第2轮随机'),
+   L('С этой полосы начинаются Insight-атаки','Insight attacks start from this bar','从这管开始出现看破攻击'),
+ ],fig:[{svg:'seaweed',cap:L('NM: порядок взрывов','NM: blast order','噩梦：爆炸顺序')}]},
+ {n:'!',t:L('Красные атаки','Red Attacks','红色攻击'),items:[
+   L('Босс вспыхивает красным — без щита почти смерть','Boss flashes red — near-death without a shield','首领闪红光——无护盾几乎即死'),
+   L('<b>Double Swipe → Pizza</b>: два взмаха, затем вся арена красная, кроме <s>одного куска</s> — бегом туда','<b>Double Swipe → Pizza</b>: two swipes, then the whole arena is red except <s>one slice</s> — run there','<b>双连斩 → 披萨</b>：两次挥砍后全场变红，只有<s>一块</s>安全——跑进去'),
+   L('<b>Лучи гробов</b>: по очереди — в 2 стороны; разом — в одну: <s>за спину</s> или далеко','<b>Coffin lasers</b>: in sequence — 2 directions; all at once — one: go <s>behind</s> or far','<b>棺材激光</b>：依次——两个方向；同时——一个方向：去<s>背后</s>或远离'),
+   L('<b>Исчезновение</b> с гробом → <v>захват</v> за игроком → <j>JG</j> → всё, кроме <s>спины</s>, — <x>смерть</x>','<b>Vanish</b> with a coffin → <v>grab</v> behind a player → <j>JG</j> → all but his <s>back</s> is <x>death</x>','带棺材<b>消失</b> → 在玩家身后<v>抓取</v> → <j>JG</j> → 除<s>背后</s>外<x>即死</x>'),
+   HM('NM: касание луча гроба — смерть','NM: touching a coffin laser = death','噩梦：碰到棺材激光即死'),
+  ],fig:[{svg:'pizza',cap:L('Pizza: один безопасный кусок','Pizza: one safe slice','披萨：只有一块安全')},{img:'../img/screens/coffinA-1.jpg',cap:L('Красные гробы','Red coffins','红色棺材')}]},
+];
+const G1B=[
+ {n:'195',t:L('Time Attack','Time Attack','限时'),ko:'타임어택',items:[
+   L('Гробы по краю, пол — сетка плит <b>7×7</b>','Coffins on the edge, the floor turns into a <b>7×7</b> tile grid','棺材立在边缘，地面变为<b>7×7</b>地砖'),
+   L('Цикл ×3: без шлепка → <j>JG</j> или «дождь» → со шлепком; после 3-го — <x>вайп</x>','Cycle ×3: no slap → <j>JG</j> or “rain” → slap; after the 3rd — <x>wipe</x>','循环×3：无拍击 → <j>JG</j>或“雨” → 拍击；第3轮后<x>团灭</x>'),
+   ST('Узор задаёт голова босса:','The boss’s head sets the pattern:','图案由首领头部朝向决定：'),
+   SUB(L('<b>Со шлепком</b>','<b>With slap</b>','<b>带拍击</b>'),[
+     L('голова на 1/5/7/11 → V','head at 1/5/7/11 → V','头在1/5/7/11点 → V形'),
+     L('голова на 3/6/9/12 → <k>контра</k>','head at 3/6/9/12 → <k>counter</k>','头在3/6/9/12点 → <k>反击</k>')]),
+   SUB(L('<b>Без шлепка</b>','<b>No slap</b>','<b>无拍击</b>'),[
+     L('6/9 → V · 1 → <k>контра</k> · 7 → «вафля» ×2 · 11 → линейная волна ×2','6/9 → V · 1 → <k>counter</k> · 7 → “waffle” ×2 · 11 → line wave ×2','6/9 → V形 · 1 → <k>反击</k> · 7 → “华夫饼”×2 · 11 → 一字波×2')]),
+   L('<k>Контры</k> — на гробах по краю','<k>Counters</k> are on the edge coffins','<k>反击</k>打边缘的棺材'),
+   HM('Схема снята на NM — на N/H узоры могут отличаться','Scheme recorded on NM — N/H patterns may differ','图案为噩梦实录——普通/困难可能不同'),
+ ],figRow:true,fig:[{svg:'taV',cap:L('V · 6/9','V · 6/9','V形 · 6/9')},{svg:'taC',cap:L('Контра · 1','Counter · 1','反击 · 1')},{svg:'taW',cap:L('Вафля · 7','Waffle · 7','华夫饼 · 7')},{svg:'taL',cap:L('Волна · 11','Wave · 11','一字波 · 11')}]},
+ {n:'120',t:L('Водоросли II','Seaweed Tentacles II','水草触手 II'),ko:'미역줄기 2',items:[
+   L('Вихрь по краю сужается — безопасная зона меньше','The edge vortex closes in — less safe space','边缘漩涡缩小——安全区变小'),
+   L('Как на 240: <s>иди туда, где взорвалось первым</s>','Same as 240: <s>go where it exploded first</s>','同240：<s>去最先爆炸的位置</s>'),
+   L('Не уходи к краю — падающие гробы сбивают <j>JG</j>','Stay off the edge — falling coffins break your <j>JG</j>','别去边缘——落下的棺材会打断<j>JG</j>'),
+   L('От волны — <s>за гроб</s> → <j>JG</j> гроба → <j>JG</j> босса','Hide from the wave <s>behind a coffin</s> → coffin <j>JG</j> → boss <j>JG</j>','躲波浪去<s>棺材后</s> → 棺材<j>JG</j> → 首领<j>JG</j>'),
+ ]},
+ {n:'80',t:L('Одновременный стаггер','Simultaneous Stagger','同时无力化'),ko:'동시 무력화',items:[
+   L('Тело на <s>6 ч</s>, клоны на <s>1</s> и <s>11</s> — у каждого своя шкала','Body at <s>6</s>, clones at <s>1</s> and <s>11</s> — each has its own gauge','本体在<s>6点</s>，分身在<s>1</s>和<s>11点</s>——各有无力化条'),
+   L('Сломать всех почти разом (~7–8 с после первого): оставь каждому чуть-чуть и добей вместе','Break all almost together (~7–8 s after the first): leave each a sliver, finish at once','几乎同时打破（第一个后约7–8秒内）：各留一点，一起打掉'),
+   L('Мешают «пиццы» слева/справа и сферы с края — <j>JG</j>, поймал телом — заточение','Left/right “pizzas” and edge orbs interfere — <j>JG</j> them; body-block = imprison','左右“披萨”和边缘法球干扰——<j>JG</j>，用身体接 = 禁锢'),
+   L('<k>Кооп-контры</k> клонов, бывает ложная; провал — шкала сбрасывается','Clone <k>co-op counters</k>, sometimes a fake first; fail resets the gauge','分身<k>协同反击</k>，有时先出假的；失败则条重置'),
+   HM('Normal: механика на ~75','Normal: the mechanic is at ~75','普通：机制在约75管'),
+ ],fig:[{svg:'clones',cap:L('Тело + 2 клона','Body + 2 clones','本体 + 2个分身')},{img:'../img/gimmicks/g1-75-clones.jpg',cap:L('Шкалы стаггера','Stagger gauges','无力化条')}]},
+ {n:'0',t:L('Great Brawl → добивание','Great Brawl → the kill','大乱斗 → 收尾'),ko:'대난투',items:[
+   L('После общего стаггера — Great Brawl, как у Серки','After the shared stagger — Great Brawl, like Serca','共同无力化后——大乱斗，同赛尔卡'),
+   L('В конце не стой под тремя лучами сразу — <x>почти смерть</x>','At the very end don’t stand in all three beams — <x>near-death</x>','最后别同时吃三道光束——<x>几乎即死</x>'),
+ ]},
+];
+
+/* ---------------- GATE II ---------------- */
+const G2A=[
+ {n:'fm',t:UI.fm,items:[
+   L('Арена над пустотой: падение = <x>смерть</x>. Многие атаки отбрасывают к обрыву — держись ближе к центру','Arena over the void: falling = <x>death</x>. Many attacks knock toward the edge — stay central','虚空上的竞技场：坠落 = <x>死亡</x>。很多攻击会击退到边缘——靠中间站'),
+   ST('<u>Захваты щупальцами</u>','<u>Tentacle grabs</u>','<u>触手抓取</u>'),
+   L('<b>Range Grab</b>: малые фиолетовые щупальца — направление; <s>точно посередине</s> между ними безопасно','<b>Range Grab</b>: small purple tentacles point the way; <s>dead centre</s> between them is safe','<b>范围抓取</b>：紫色小触手指示方向；两者<s>正中间</s>安全'),
+   L('<b>Circle Grab</b>: белые щупальца идут 90° по часовой → стой <s>против часовой от белого</s>; в конце <j>JG</j>','<b>Circle Grab</b>: white tentacles sweep 90° clockwise → stand <s>counter-clockwise of white</s>; ends with <j>JG</j>','<b>环形抓取</b>：白色触手顺时针扫90° → 站在白触手<s>逆时针侧</s>；最后<j>JG</j>'),
+   L('<b>Slingshot</b>: <k>кооп-контра</k> с той стороны, откуда начался <v>захват</v>','<b>Slingshot</b>: <k>co-op counter</k> from the side the <v>grab</v> started','<b>弹弓</b>：从<v>抓取</v>开始的一侧<k>协同反击</k>'),
+   L('<b>Close Grab</b> / <b>Launch</b>: держи пробел в запасе','<b>Close Grab</b> / <b>Launch</b>: keep your spacebar ready','<b>近身抓取</b> / <b>挑飞</b>：留好空格'),
+   ST('<u>Just Guard</u>','<u>Just Guard</u>','<u>精准防御</u>'),
+   L('<j>Holding JG</j> — нужен хотя бы один; следующий <j>JG</j> — только выдержавшим','<j>Holding JG</j> — at least one needed; the next <j>JG</j> only for those who held','<j>持续精准防御</j>——至少一人；后续<j>JG</j>仅限坚持住的人'),
+   L('<b>Pacing JG</b>: встать на зелёную площадку впереди. Мало → «Great» → <k>кооп-контра</k>; много → «Perfect» → <k>контра</k> → долгое окно урона','<b>Pacing JG</b>: stand on the green pad ahead. Few → “Great” → <k>co-op counter</k>; many → “Perfect” → <k>counter</k> → long damage window','<b>踱步JG</b>：站上前方绿色平台。人少 → “Great” → <k>协同反击</k>；人多 → “Perfect” → <k>反击</k> → 长输出窗口'),
+   HM('«Perfect»: H ≥3, NM ≥4 игроков — договоритесь заранее','“Perfect”: H ≥3, NM ≥4 players — agree beforehand','“Perfect”：困难≥3人，噩梦≥4人——提前约好'),
+   L('<j>JG</j> по сферам: смотри на <b>сферу перед боссом</b>, а не на босса','Orb <j>JG</j>: watch the <b>orb in front of the boss</b>, not the boss','法球<j>JG</j>：看<b>首领前方的法球</b>，不是首领'),
+   HM('Миссия: ≤2 захватов Kragma на весь отряд и никто не умер','Mission: ≤2 Kragma grabs for the whole raid and nobody dies','任务：全队被抓≤2次且无人死亡'),
+ ],fig:[{img:'../img/screens/range-1.jpg',cap:L('Range Grab','Range Grab','范围抓取')},
+        {img:'../img/screens/rotate-2.jpg',cap:L('Circle Grab','Circle Grab','环形抓取')},
+        {img:'../img/screens/pacing-2.jpg',cap:L('Pacing JG — зелёная площадка','Pacing JG — green pad','踱步JG——绿色平台')}]},
+ {n:'360',t:L('Срыв ритуала','Ritual Disruption','阻止仪式'),ko:'의식 저지',items:[
+   L('Kragma неуязвим. Жертвы на <s>3/6/9/12</s> — сломать все, иначе <x>вайп</x>','Kragma is invulnerable. Sacrifices at <s>3/6/9/12</s> — break all, or <x>wipe</x>','克拉格玛无敌。<s>3/6/9/12点</s>祭品——全部打破，否则<x>团灭</x>'),
+   L('Фанатики на 1 и 7 (или 5 и 11) → <k>контра</k>; контрящему прилетает конус-лужа — направь её в объекты:','Cultists at 1 & 7 (or 5 & 11) → <k>counter</k>; the counterer gets a cone puddle — aim it at objects:','狂信徒在1和7点（或5和11点）→ <k>反击</k>；反击者会被扇形地板点名——对准祭品：'),
+   SUB(L('7 → 9 и 12 · 1 → 3 и 6','7 → 9 & 12 · 1 → 3 & 6','7 → 9和12 · 1 → 3和6'),[L('11 → 9 и 6 · 5 → 12 и 3','11 → 9 & 6 · 5 → 12 & 3','11 → 9和6 · 5 → 12和3')]),
+   L('Сферы — «бильярд»: 1-й <j>JG</j> уменьшает сферу, 2-й <j>JG</j> лицом к объекту — сфера летит в него','Orbs = “billiards”: 1st <j>JG</j> shrinks it, 2nd <j>JG</j> facing an object sends it flying there','法球“台球”：第1次<j>JG</j>缩小法球，第2次面朝祭品<j>JG</j>将其打飞过去'),
+   L('<s>Пати 1 — слева (9/12), пати 2 — справа (3/6)</s>, саппорты на контрах','<s>Party 1 — left (9/12), party 2 — right (3/6)</s>, supports on counters','<s>1队——左（9/12），2队——右（3/6）</s>，辅助负责反击'),
+ ],fig:[{svg:'ritual',cap:L('Объекты и фанатики','Objects & cultists','祭品与狂信徒')},{img:'../img/gimmicks/g2-360-orb.jpg',cap:L('Сфера для JG','Orb for JG','用于JG的法球')}]},
+ {n:'320',t:L('Второй ритуал','Second Ritual','第二次仪式'),ko:'2차 의식 저지',items:[
+   L('Kragma прыгает на случайную точку 3/6/9/12 и зовёт аддов','Kragma jumps to a random 3/6/9/12 and summons adds','克拉格玛跳到随机3/6/9/12点并召唤小怪'),
+   L('Порядок: стаггер Kragma (снимает неуязвимость аддов) → малые адды → большие адды на цепях (снимают снижение урона) → жёлтая шкала под HP','Order: stagger Kragma (adds lose invulnerability) → small adds → big tethered adds (remove damage reduction) → yellow gauge under HP','顺序：打无力化克拉格玛（解除小怪无敌）→ 小型小怪 → 锁链大型小怪（解除减伤）→ 血条下黄色条'),
+   L('<b>Рви цепи</b> — иначе утащит, а урон не пройдёт','<b>Break the chains</b> — or you’re dragged and deal no damage','<b>挣断锁链</b>——否则被拖走且打不出伤害'),
+ ],fig:[{img:'../img/gimmicks/g2-320-tethers.jpg',cap:L('Цепи к аддам','Tethers to adds','连向小怪的锁链')}]},
+];
+const G2B=[
+ {n:'300',t:L('Chaktum','First Disgrace, Chaktum','最初之耻·查克图姆'),ko:'최초의 치욕',items:[
+   L('Маска над Kragma становится аватаром <b>Chaktum</b>, по фону ходят «глаза»','The mask above Kragma becomes the avatar <b>Chaktum</b>; “eyes” roam the background','克拉格玛上方的面具化为<b>查克图姆</b>化身，背景中有“眼睛”游走'),
+   L('Дальше — разрушение арены и совместные атаки с лучами Chaktum','Next: arena destruction and joint attacks with Chaktum’s beams','之后——竞技场崩塌与查克图姆光束联合攻击'),
+ ]},
+ {n:'280',t:L('Резонанс','Resonance','共鸣'),ko:'공명',items:[
+   L('Красный пол — зона огромного луча','Red floor = the area of a huge beam','红色地面——巨型光束范围'),
+   L('Цикл: <j>JG</j> → рывок к игроку → <k>контра</k>','Loop: <j>JG</j> → dash at a player → <k>counter</k>','循环：<j>JG</j> → 冲向玩家 → <k>反击</k>'),
+   L('<b>Не контрь</b>, пока красная зона не сузится — урон по Kragma её сужает','<b>Don’t counter</b> until the red zone narrows — damage on Kragma narrows it','红区缩小前<b>不要反击</b>——打克拉格玛能让它缩小'),
+   L('По краю появилась <s>безопасная полоса</s> → <j>JG</j>, <k>контра</k> и к стене','A <s>safe strip</s> appears at the edge → <j>JG</j>, <k>counter</k>, then to the wall','边缘出现<s>安全带</s> → <j>JG</j>、<k>反击</k>，然后靠墙'),
+ ],fig:[{img:'../img/gimmicks/resonance-2.jpg',cap:L('Красная зона луча','Red beam zone','红色光束区域')}]},
+ {n:'240',t:L('Разрушение арены','Terrain Destruction','地形破坏'),ko:'지형파괴',tag:L('240 · ~135','240 · ~135','240 · ~135'),items:[
+   L('Камера отдаляется, внешнее кольцо арены рушится','Camera pulls back, the outer ring of the arena collapses','镜头拉远，竞技场外圈崩塌'),
+   L('<v>Захваты</v> подряд — направление показывает щупальце, <b>светящееся красным</b>','<v>Grabs</v> in a row — the tentacle <b>glowing red</b> shows the direction','连续<v>抓取</v>——<b>发红光</b>的触手指示方向'),
+   L('Chaktum стреляет лучами','Chaktum fires beams','查克图姆发射光束'),
+   HM('После ~135 атаки Kragma усилены: лужи, лишние удары, двойные захваты','After ~135 Kragma’s attacks are empowered: puddles, extra hits, double grabs','约135管后克拉格玛攻击强化：地板、额外攻击、双重抓取'),
+ ],fig:[{img:'../img/gimmicks/terrain-1.jpg',cap:L('Рушится край','The edge collapses','边缘崩塌')}]},
+ {n:'195',t:L('Боковой завет','Side Precept','侧面戒律'),ko:'계율의 측면',items:[
+   L('Камера сбоку (2D) — набивай стаггер, уворачиваясь','Side camera (2D) — build stagger while dodging','侧视角（2D）——边躲边打无力化'),
+   L('Красное щупальце — <v>захват</v>; фиолетовые лучи Chaktum режут стаггер-урон','Red tentacle = <v>grab</v>; Chaktum’s purple beams cut stagger damage','红色触手——<v>抓取</v>；查克图姆紫色光束降低无力化伤害'),
+   L('Зелёная атака «Lucid»','Green “Lucid” attack','绿色“Lucid”攻击'),
+ ],fig:[{img:'../img/gimmicks/precept-1.jpg',cap:L('Вид сбоку','Side view','侧视角')}]},
+ {n:'~100',t:L('Great Brawl','Great Brawl','大乱斗'),ko:'대난투',items:[
+   L('В начале Kragma тянет щупальце влево — сначала <j>JG</j>, потом урон','At the start Kragma pulls a tentacle left — <j>JG</j> first, then damage','开始时克拉格玛把触手拉向左侧——先<j>JG</j>，再输出'),
+ ]},
+ {n:'~80',t:L('Angry Bird','Angry Bird','愤怒的小鸟'),ko:'회전하는 계율',items:[
+   L('В центре чёрная лужа — <s>встань в неё</s>, чтобы взлететь','A black puddle in the middle — <s>step in</s> to take off','中间出现黑色地板——<s>站进去</s>起飞'),
+   L('Зажми мышь, медленно прицелься и отпусти — приземлишься у босса; тяни шкалу до конца','Hold the mouse, aim slowly, release to land by the boss; pull the gauge to the end','按住鼠标慢慢瞄准后松开，落在首领旁；把条拉满'),
+   L('Фиолетовые лучи — заточение ~50 с, <x>не попадайся</x>','Purple beams = ~50 s imprison — <x>avoid</x>','紫色光束——禁锢约50秒，<x>别被打中</x>'),
+   L('Лучи на миг замерли → окно: два стаггера — и готово','Beams pause → window: two staggers and done','光束短暂停止 → 窗口：两次无力化即可'),
+ ],fig:[{img:'../img/gimmicks/angry-1.jpg',cap:L('Взлёт из лужи','Launch from the puddle','从地板起飞')}]},
+ {n:'0',t:L('Добивание','The kill','收尾'),items:[
+   L('Только обычные атаки — главное <x>не упасть с края</x>','Only regular attacks — just <x>don’t fall off</x>','只剩普通攻击——<x>别掉下去</x>就行'),
+ ]},
+];
+
+/* ---------------- SVG diagrams ---------------- */
+const pt=(cx,cy,r,h)=>{const a=h*Math.PI/6;return [cx+r*Math.sin(a),cy-r*Math.cos(a)];};
+function sector(cx,cy,r,h1,h2){const [x1,y1]=pt(cx,cy,r,h1),[x2,y2]=pt(cx,cy,r,h2);return `M${cx},${cy}L${x1.toFixed(1)},${y1.toFixed(1)}A${r},${r} 0 0 1 ${x2.toFixed(1)},${y2.toFixed(1)}Z`;}
+const RED='#c8323f',SAFE='#3f9f6e';
+function clockTicks(cx,cy,r,c='#6b6276'){let s='';for(let h=0;h<12;h++){const[a,b]=pt(cx,cy,r,h),[e,f]=pt(cx,cy,r-6,h);s+=`<line x1="${a}" y1="${b}" x2="${e}" y2="${f}" stroke="${c}" stroke-width="2"/>`;}return s;}
+const SVG={
+ pizza(){let s=`<svg class="dg" viewBox="0 0 200 128"><rect width="200" height="128" rx="6" fill="#120f16"/>`;
+   const cx=100,cy=64,r=56;
+   for(let i=0;i<8;i++){const h=i*1.5;s+=`<path d="${sector(cx,cy,r,h,h+1.5)}" fill="${i==3?SAFE:RED}" opacity="${i==3?.95:.78}" stroke="#120f16" stroke-width="2"/>`;}
+   s+=`<circle cx="${cx}" cy="${cy}" r="9" fill="#2a2430" stroke="#e8dccb" stroke-width="2"/>`;
+   const[a,b]=pt(cx,cy,r*.62,5.25);s+=`<text x="${a}" y="${b+5}" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">✓</text></svg>`;return s;},
+ seaweed(){let s=`<svg class="dg" viewBox="0 0 200 150"><rect width="200" height="150" rx="6" fill="#120f16"/>`;const cx=100,cy=75,r=62;
+   s+=`<circle cx="${cx}" cy="${cy}" r="${r+6}" fill="none" stroke="#7e6bd6" stroke-width="4" stroke-dasharray="3 5" opacity=".7"/>`;
+   const order={5:1,11:2,7:3};
+   for(let h=0;h<12;h++){const o=order[h];s+=`<path d="${sector(cx,cy,r,h-.5,h+.5)}" fill="${o?RED:'#2a2430'}" opacity="${o?(1.05-o*.18):.9}" stroke="#120f16" stroke-width="1.5"/>`;}
+   for(const h in order){const[a,b]=pt(cx,cy,r*.7,+h);s+=`<circle cx="${a}" cy="${b}" r="10" fill="#120f16" stroke="#fff" stroke-width="1.5"/><text x="${a}" y="${b+4.5}" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Oswald">${order[h]}</text>`;}
+   s+=clockTicks(cx,cy,r);s+=`<circle cx="${cx}" cy="${cy}" r="8" fill="#a98bff"/></svg>`;return s;},
+ clones(){let s=`<svg class="dg" viewBox="0 0 200 150"><rect width="200" height="150" rx="6" fill="#120f16"/>`;const cx=100,cy=75,r=60;
+   s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#1f1a26" stroke="#4b4256" stroke-width="2"/>`+clockTicks(cx,cy,r);
+   const U=[[6,'#a98bff',13],[1,'#7fb2ff',10],[11,'#7fb2ff',10]];
+   for(const[h,c,rr] of U){const[a,b]=pt(cx,cy,r*.68,h);s+=`<circle cx="${a}" cy="${b}" r="${rr}" fill="${c}" stroke="#fff" stroke-width="1.5"/>`;
+     s+=`<rect x="${a-16}" y="${b+(h==6?-26:15)}" width="32" height="5" rx="2" fill="#3a3342"/><rect x="${a-16}" y="${b+(h==6?-26:15)}" width="6" height="5" rx="2" fill="#f2d15c"/>`;
+     s+=`<text x="${a}" y="${b+4}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#120f16" font-family="Oswald">${h}</text>`;}
+   s+=`<text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="12" font-weight="600" fill="#f2d15c" font-family="Oswald">~7 s</text></svg>`;return s;},
+ ritual(){let s=`<svg class="dg" viewBox="0 0 250 190"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#5fc6ff"/></marker></defs><rect width="250" height="190" rx="6" fill="#120f16"/>`;
+   const cx=125,cy=97,r=74;
+   s+=`<path d="M${cx},${cy-r-6}A${r+6},${r+6} 0 0 0 ${cx},${cy+r+6}" fill="none" stroke="#66d29e" stroke-width="3" opacity=".55"/>`;
+   s+=`<path d="M${cx},${cy-r-6}A${r+6},${r+6} 0 0 1 ${cx},${cy+r+6}" fill="none" stroke="#66d29e" stroke-width="3" opacity=".55" stroke-dasharray="6 4"/>`;
+   s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#2a1418" stroke="#6b2f35" stroke-width="2"/>`;
+   const arrow=(h1,h2)=>{const[a,b]=pt(cx,cy,r*.66,h1),[c,d]=pt(cx,cy,r*.62,h2);const mx=(a+c)/2+(cx-(a+c)/2)*.35,my=(b+d)/2+(cy-(b+d)/2)*.35;return `<path d="M${a},${b}Q${mx},${my} ${c},${d}" fill="none" stroke="#5fc6ff" stroke-width="1.8" marker-end="url(#ah)" opacity=".9"/>`;};
+   s+=arrow(7,9)+arrow(7,12)+arrow(1,3)+arrow(1,6);
+   for(const h of [3,6,9,12]){const[a,b]=pt(cx,cy,r*.74,h);s+=`<rect x="${a-11}" y="${b-11}" width="22" height="22" rx="4" fill="#d4a85a" stroke="#fff" stroke-width="1.2"/><text x="${a}" y="${b+4.5}" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1408" font-family="Oswald">${h}</text>`;}
+   for(const h of [1,7]){const[a,b]=pt(cx,cy,r*.74,h);s+=`<circle cx="${a}" cy="${b}" r="10" fill="#5fc6ff" stroke="#fff" stroke-width="1.2"/><text x="${a}" y="${b+4.5}" text-anchor="middle" font-size="12" font-weight="700" fill="#06202e" font-family="Oswald">${h}</text>`;}
+   s+=`<circle cx="${cx}" cy="${cy}" r="12" fill="#e0614f" stroke="#fff" stroke-width="1.5"/>`;
+   s+=`<text x="16" y="24" font-size="13" font-weight="700" fill="#66d29e" font-family="Oswald">P1</text><text x="234" y="24" text-anchor="end" font-size="13" font-weight="700" fill="#66d29e" font-family="Oswald">P2</text></svg>`;return s;},
+};
+/* Time Attack grids: 7×7 seen as a diamond, coffins along the two upper edges (after Inven’s diagrams) */
+function taGrid(fn,counter){const N=7,c=11;let cells='';
+  for(let r=0;r<N;r++)for(let q=0;q<N;q++){const v=fn(r,q);cells+=`<rect x="${q*c}" y="${r*c}" width="${c-1.2}" height="${c-1.2}" fill="${v==2?'#ff3b4a':v==1?'#b52733':'#3a3442'}"/>`;}
+  let cof='';for(let i=0;i<N;i++){cof+=`<rect x="${i*c+2}" y="-9" width="${c-4}" height="6" rx="2" fill="${counter?'#5fc6ff':'#6b4f9a'}"/><rect x="-9" y="${i*c+2}" width="6" height="${c-4}" rx="2" fill="#6b4f9a"/>`;}
+  return `<svg class="dg" viewBox="0 0 120 92"><rect width="120" height="92" rx="6" fill="#120f16"/><g transform="translate(60,10) scale(1,.72) rotate(45)">${cof}${cells}</g></svg>`;}
+SVG.taV=()=>taGrid((r,q)=>(r>=4||q>=4)?((r==4&&q<4)||(q==4&&r<4)?2:1):0);
+SVG.taC=()=>taGrid((r,q)=>r==0?1:0,true);
+SVG.taW=()=>taGrid((r,q)=>((r==0||r==6)&&(q==0||q==6))?0:(r%2==1&&q%2==1)?0:1);
+SVG.taL=()=>taGrid((r,q)=>r<=1?1:r==2?2:0);
+
+
+/* ---------------- battle items (Arca 179011733 cheat sheet; Inven 110616, 110610; patch notice 13508). Names = EU/NA client (lostarkcodex.com); icons = game icons (via LOA Logs) ---------------- */
+const ITEMS={
+ head:L('Расходка','Battle items','战斗道具'),
+ note:L('корейские гайды · пунктир — по ситуации','Korean guides · EU/NA client names · dashed = situational','韩服攻略 · 国际服名称 · 虚线 = 视情况'),
+ g1:[
+  {img:'../img/items/dark-grenade.png',n:L('Осколочная граната','Dark Grenade','Dark Grenade'),u:L('базовый набор','core kit','基础配置')},
+  {img:'../img/items/atropine-potion.png',n:L('Ардопин-Х','Atropine Potion','Atropine Potion'),u:L('базовый набор','core kit','基础配置')},
+  {img:'../img/items/sacred-charm.png',n:L('Свиток с заклинанием «Молитва»','Sacred Charm','Sacred Charm'),u:L('базовый набор','core kit','基础配置')},
+  {img:'../img/items/time-stop-potion.png',opt:1,n:L('Зелье передышки','Time Stop Potion','Time Stop Potion'),u:L('вместо атропина — от <em style="color:var(--death)">красных ваншотов</em>','instead of Atropine — vs <em style="color:var(--death)">red one-shots</em>','替代阿托品——防<em style="color:var(--death)">红色即死</em>')},
+  {img:'../img/items/splendid-sacred-bomb.png',opt:1,n:L('Склянка с концентратом нашатырного спирта','Splendid Sacred Bomb','Splendid Sacred Bomb'),u:L('<em>Jump Rope</em> без пробела — под себя','<em>Jump Rope</em> with no spacebar — drop on yourself','<em>跳绳</em>没有空格时——扔在脚下')},
+ ],
+ g2:[
+  {img:'../img/items/whirlwind-grenade.png',n:L('Фугасная граната','Whirlwind Grenade','Whirlwind Grenade'),u:L('базовый набор (или осколочная)','core kit (or Dark)','基础配置（或Dark）')},
+  {img:'../img/items/atropine-potion.png',n:L('Ардопин-Х','Atropine Potion','Atropine Potion'),u:L('базовый набор','core kit','基础配置')},
+  {img:'../img/items/sacred-charm.png',n:L('Свиток с заклинанием «Молитва»','Sacred Charm','Sacred Charm'),u:L('базовый набор','core kit','基础配置')},
+  {img:'../img/items/flame-grenade.png',opt:1,n:L('Зажигательная граната','Flame Grenade','Flame Grenade'),u:L('H: стаггер в <em>Angry Bird</em> — вместе с Тенью','H: <em>Angry Bird</em> stagger — with the Shadow','困难：<em>愤怒的小鸟</em>无力化——配合暗影')},
+  {img:'../img/items/phetus-shadow.png',opt:1,n:L('Тень Phetus an Kragma','Phetus an Kragma\'s Shadow','Phetus an Kragma\'s Shadow'),u:L('стаггер, КД 1 мин, 5 шт. · рецепт за ачивку врат II','stagger, 1 min CD, 5 uses · recipe: Gate II achievement','无力化，冷却1分钟，5个 · 配方：2门成就')},
+ ]};
+function items(g){const L2=ITEMS[g===1?'g1':'g2'];
+  return `<div class="items"><div class="ih">${tx(ITEMS.head)}<small>${tx(ITEMS.note)}</small></div>`+
+   L2.map(i=>`<div class="it${i.opt?' opt':''}"><div class="ic">${i.img?`<img src="${i.img}" alt="">`:i.ic}</div><div><b>${tx(i.n)}</b><span>${tx(i.u)}</span></div></div>`).join('')+`</div>`;}
+
+/* ---------------- render ---------------- */
+let LG='ru';
+const tx=o=>o==null?'':typeof o==='string'?o:(o[LG]??o.ru);
+const ICON_FM='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 20 15 9M14 4l6 6M5 15l4 4M17 3l4 4-2 2-4-4z"/></svg>';
+function li(b){const sub=b.sub?`<ul>${b.sub.map(li).join('')}</ul>`:'';return `<li${b.c?` class="${b.c}"`:''}>${tx(b)}${sub}</li>`;}
+function fig(f){const inner=f.svg?SVG[f.svg]():`<img src="${f.img}" alt="${tx(f.cap)}" loading="eager">`;return `<figure>${inner}<figcaption>${tx(f.cap)}</figcaption></figure>`;}
+function sec(s){
+  const num=s.n==='fm'?ICON_FM:s.n==='!'?'<span style="color:var(--death)">!</span>':s.n;
+  const h=`<h3>${tx(s.t)}${s.tag?`<span class="tag">${tx(s.tag)}</span>`:''}${s.ko?`<span class="ko" lang="ko">${s.ko}</span>`:''}</h3>`;
+  const list=`<ul>${s.items.map(li).join('')}</ul>`;
+  let body;
+  if(s.figRow) body=`<div class="txt">${list}</div></div><div class="dgrow" style="margin-top:8px">${s.fig.map(fig).join('')}`;
+  else body=`<div class="txt">${list}</div>${s.fig?`<div class="fig${s.n==='360'?' w':''}">${s.fig.map(fig).join('')}</div>`:''}`;
+  return `<section class="sec"><div class="num">${num}</div>${h}<div class="body">${body}</div></section>`;
+}
+const fmt=n=>n.toLocaleString(LG==='zh'?'zh-CN':LG==='en'?'en-US':'ru-RU');
+const HP={N:[1739316795458,1950577229952],H:[2768565114395,3133977387540],NM:[4951627226525,5605114847754]};
+const GOLD={N:50000,H:62000,NM:75000};
+function gate(g){
+  const one=g===1,cls=one?'g1':'g2';
+  const hp=['N','H','NM'].map(d=>`<i>${d} · ${fmt(HP[d][g-1])}</i>`).join('');
+  const lbls=one?[['300','240'],['195','0']]:[['360','320'],['300','0']];
+  const orn=`<div class="orn"><span class="ln"></span><span class="lbl">${tx(UI.gate)} ${one?'I':'II'} · <em>${lbls[0][0]}</em> → ${lbls[0][1]}</span><span class="dia"></span><span class="lbl"><em>${lbls[1][0]}</em> → ${lbls[1][1]}</span><span class="ln"></span></div>`;
+  const A=one?G1A:G2A,B=one?G1B:G2B;
+  return `<div class="${cls}">
+   <div class="ghead"><div class="gbadge"><span>G${g}<small>${one?'10:00':'13:00'}</small></span></div>
+     <div><div class="gname">${tx(one?UI.g1name:UI.g2name)}</div>
+     <div class="gtags">${tx(one?UI.g1place:UI.g2place)} · ${tx(one?UI.g1tags:UI.g2tags)}</div>
+     <div class="ghp">${hp}</div></div></div>
+   ${orn}
+   ${items(g)}
+   <div class="cols"><div class="col">${A.map(sec).join('')}</div><div class="col">${B.map(sec).join('')}</div></div></div>`;
+}
+const LOCK='<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0-6 6v4h12V9a6 6 0 0 0-6-6z"/><rect x="4" y="12" width="16" height="9" rx="2"/></svg>';
+function render(){
+  document.documentElement.lang=LG==='zh'?'zh-CN':LG;
+  const D=[['n',1750,'N'],['h',1770,'H'],['nm',1780,'NM']].map(([k,il,G])=>`<div class="diff d-${k}">${LOCK}<span class="n">${tx(UI.diff[k])}</span><span class="il">${il}</span><span class="gd"><b>${fmt(GOLD[G])}</b><br>${tx(UI.gold)}</span></div>`).join('');
+  document.getElementById('sheet').innerHTML=`
+   <header class="top"><div class="kick">${tx(UI.kick)}</div><h1>${tx(UI.title)}</h1><div class="diffs">${D}</div></header>
+   <div class="gates">${gate(1)}${gate(2)}</div>
+   <footer class="foot"><div class="legend">${UI.legend.map(([c,l])=>`<span><i style="background:${c}"></i>${tx(l)}</span>`).join('')}</div>
+     <div class="mid">${tx(UI.src)}</div><div class="cr">${tx(UI.credit)}</div></footer>`;
+  document.getElementById('bar').innerHTML=`<a href="../index.html?lang=${LG}">${tx(UI.back)}</a><span class="sp"></span>`+
+    [['ru','RU'],['en','EN'],['zh','中文']].map(([l,n])=>`<button type="button" data-l="${l}" aria-pressed="${l===LG}">${n}</button>`).join('')+
+    `<span class="sp"></span><button type="button" class="zm" aria-pressed="${FIT}">${tx(FIT?UI.fit:UI.full)}</button>`+
+    `<a href="belgardin-cheatsheet-${LG}.png" download>${tx(UI.save)}</a>`;
+  document.querySelector('.bar .zm').onclick=()=>{FIT=!FIT;try{localStorage.setItem('belg_cs_fit',FIT?'1':'0');}catch(e){}render();};
+  fit();
+  document.querySelectorAll('.bar button[data-l]').forEach(b=>b.onclick=()=>{LG=b.dataset.l;try{localStorage.setItem('belg_lang',LG);}catch(e){}history.replaceState(null,'','?lang='+LG);render();});
+}
+/* fit-to-width: scale the 2400px sheet down to the viewport (1:1 keeps native size with horizontal scroll) */
+let FIT=true;try{FIT=localStorage.getItem('belg_cs_fit')!=='0';}catch(e){}
+function fit(){
+  const sh=document.getElementById('sheet'),k=FIT&&!document.documentElement.classList.contains('print')?Math.min(1,document.documentElement.clientWidth/2400):1;
+  sh.style.zoom=k===1?'':k;
+}
+addEventListener('resize',fit);
+(function init(){
+  const p=new URLSearchParams(location.search);let q=(p.get('lang')||'').toLowerCase();if(q==='cn')q='zh';
+  if(!/^(ru|en|zh)$/.test(q)){try{q=localStorage.getItem('belg_lang')||'';}catch(e){}}
+  if(!/^(ru|en|zh)$/.test(q)){const n=(navigator.language||'ru').toLowerCase();q=n.startsWith('zh')?'zh':/^(ru|uk|be|kk)/.test(n)?'ru':'en';}
+  LG=q;if(p.has('print'))document.documentElement.classList.add('print');render();
+})();
+</script>
+</body>
+</html>

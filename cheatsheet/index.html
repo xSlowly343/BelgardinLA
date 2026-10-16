@@ -165,6 +165,19 @@ figure .ov{position:absolute;left:6px;top:5px;font:600 11px var(--fb);background
 .foot .cr{text-align:right}
 .foot .cr b{color:var(--gold);font-weight:600}
 .foot .mid{text-align:center}
+
+/* ---------- hover preview: pictures and diagrams pop out at a readable size ---------- */
+figure{cursor:zoom-in}
+figure img,figure .dg{transition:transform .18s,box-shadow .18s,outline-color .18s;outline:2px solid transparent;outline-offset:1px;border-radius:6px}
+figure:hover img,figure:hover .dg,figure.on img,figure.on .dg{outline-color:var(--gold);box-shadow:0 6px 22px rgba(0,0,0,.6);transform:scale(1.03)}
+#zoom{position:fixed;z-index:20;left:0;top:0;pointer-events:none;opacity:0;transform:scale(.96);transform-origin:var(--ox,50%) var(--oy,50%);
+  transition:opacity .14s,transform .14s;padding:8px;border-radius:12px;background:#141118;border:1px solid var(--gold);box-shadow:0 18px 60px rgba(0,0,0,.75)}
+#zoom.show{opacity:1;transform:none}
+#zoom img,#zoom svg{display:block;width:100%;height:auto;border-radius:7px}
+#zoom img{border:1px solid #3a3443}
+#zoom .zc{font:500 15px/1.35 var(--fb);color:var(--ink);text-align:center;margin-top:6px}
+html.print #zoom{display:none}
+@media (prefers-reduced-motion:reduce){#zoom,figure img,figure .dg{transition:none}}
 </style>
 </head>
 <body>
@@ -477,6 +490,29 @@ function render(){
   document.querySelectorAll('.bar button[data-l]').forEach(b=>b.onclick=()=>{LG=b.dataset.l;try{localStorage.setItem('belg_lang',LG);}catch(e){}history.replaceState(null,'','?lang='+LG);render();});
 }
 /* fit-to-width: scale the 2400px sheet down to the viewport (1:1 keeps native size with horizontal scroll) */
+/* hover preview — lives outside the zoomed sheet so it is always shown at real screen size */
+const ZM=document.createElement('div');ZM.id='zoom';ZM.setAttribute('aria-hidden','true');document.body.appendChild(ZM);
+let zFig=null;
+function zShow(f,x,y){
+  if(document.documentElement.classList.contains('print'))return;
+  if(f!==zFig){zFig&&zFig.classList.remove('on');zFig=f;f.classList.add('on');
+    const m=f.querySelector('img,svg'),c=f.querySelector('figcaption');
+    ZM.innerHTML='';ZM.appendChild(m.cloneNode(true));if(c)ZM.insertAdjacentHTML('beforeend',`<div class="zc">${c.innerHTML}</div>`);
+    const vw=innerWidth,vh=innerHeight,svg=m.tagName.toLowerCase()==='svg';
+    const ar=svg?(m.viewBox.baseVal.height/m.viewBox.baseVal.width):(m.naturalHeight/m.naturalWidth||10/16);
+    let w=Math.min(svg?620:900,vw*.46);if(w*ar+60>vh*.9)w=(vh*.9-60)/ar;ZM.style.width=Math.max(220,w)+'px';}
+  const r=ZM.getBoundingClientRect(),g=24,w=r.width,h=r.height;
+  let L=x>innerWidth/2?x-w-g:x+g;L=Math.max(8,Math.min(innerWidth-w-8,L));
+  let T=Math.max(8,Math.min(innerHeight-h-8,y-h/2));
+  ZM.style.left=L+'px';ZM.style.top=T+'px';ZM.style.setProperty('--ox',(x<innerWidth/2?'0':'100%'));ZM.style.setProperty('--oy',(y-T)+'px');
+  ZM.classList.add('show');
+}
+function zHide(){ZM.classList.remove('show');zFig&&zFig.classList.remove('on');zFig=null;}
+document.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;const f=e.target.closest&&e.target.closest('#sheet figure');f?zShow(f,e.clientX,e.clientY):zFig&&zHide();});
+document.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch')return;const f=e.target.closest&&e.target.closest('#sheet figure');if(f&&f!==zFig)zShow(f,e.clientX,e.clientY);else zHide();});
+addEventListener('scroll',()=>zFig&&zHide(),{passive:true,capture:true});
+document.addEventListener('mouseleave',zHide);
+
 const SHARE='https://xslowly343.github.io/BelgardinLA/cheatsheet/';
 let FIT=true;try{FIT=localStorage.getItem('belg_cs_fit')!=='0';}catch(e){}
 function fit(){

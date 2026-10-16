@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Boss models</title>
+<style>
+  :root{--bg:#121017;--fg:#e6e1ec;--mut:#9a93a6;--acc:#b27cff}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:14px system-ui,sans-serif}
+  #ui{position:fixed;left:12px;top:12px;right:12px;display:flex;flex-wrap:wrap;gap:6px;z-index:2}
+  button{background:#221d2b;color:var(--fg);border:1px solid #3a3346;border-radius:6px;padding:6px 10px;cursor:pointer}
+  button.on{border-color:var(--acc);color:var(--acc)}
+  #info{position:fixed;left:12px;bottom:12px;color:var(--mut)}
+  canvas{display:block}
+</style>
+</head>
+<body>
+<div id="ui"></div>
+<div id="info"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+/* Quick check of the boss GLBs in the arena's three.js version (r128). Needs an http server (not file://). */
+const R=new THREE.WebGLRenderer({antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,2));R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;
+document.body.appendChild(R.domElement);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x121017);
+const cam=new THREE.PerspectiveCamera(40,1,.1,800);cam.position.set(9,6,15);
+const ctl=new THREE.OrbitControls(cam,R.domElement);ctl.target.set(0,3,0);
+scene.add(new THREE.HemisphereLight(0x9a98c0,0x140e0a,.7));const sun=new THREE.DirectionalLight(0xc9d2ff,1.4);sun.position.set(-6,12,8);scene.add(sun);
+const floor=new THREE.Mesh(new THREE.CircleGeometry(12,48),new THREE.MeshStandardMaterial({color:0x1a1720,roughness:.95}));floor.rotation.x=-Math.PI/2;scene.add(floor);
+const ui=document.getElementById('ui'),info=document.getElementById('info');
+let cur=null,mixer=null,acts={},clock=new THREE.Clock(),arena=null;
+const Q=new URLSearchParams(location.search);
+/* arena layer: arena1 / arena2 GLB under the boss (?a=arena1|arena2) */
+function loadArena(n){if(arena){scene.remove(arena);arena=null;}floor.visible=!n;scene.fog=null;scene.background=new THREE.Color(0x121017);
+  if(!n)return;new THREE.GLTFLoader().load(n+'.glb',g=>{arena=g.scene;scene.add(arena);
+    scene.fog=new THREE.FogExp2(n=='arena1'?0x3a3d4c:0x1c0f2a,n=='arena1'?.016:.009);scene.background=new THREE.Color(n=='arena1'?0x1a1b24:0x12081c);
+    let tris=0;arena.traverse(o=>{if(o.isMesh){tris+=o.geometry.index?o.geometry.index.count/3:o.geometry.attributes.position.count/3;if(o.name=='sky'||o.parent&&o.parent.name=='sky')o.material.fog=false;}});
+    window.__arena={name:n,tris:Math.round(tris),objects:arena.children.map(c=>c.name)};},undefined,e=>{info.textContent='arena load error: '+e.message;});}
+function size(){R.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();}addEventListener('resize',size);size();
+function load(name){
+  if(cur)scene.remove(cur);ui.innerHTML='';
+  ['belgardin','kragma'].forEach(n=>{const b=document.createElement('button');b.textContent=n;b.className=n==name?'on':'';b.onclick=()=>load(n);ui.appendChild(b);});
+  ['', 'arena1','arena2'].forEach(n=>{const b=document.createElement('button');b.textContent=n||'no arena';b.className=(window.__arena?.name||'')==n?'on':'';b.onclick=()=>{loadArena(n);window.__arena=n?{name:n}:null;load(name);};ui.appendChild(b);});
+  new THREE.GLTFLoader().load(name+'.glb',g=>{
+    cur=g.scene;scene.add(cur);mixer=new THREE.AnimationMixer(cur);acts={};
+    let tris=0;cur.traverse(o=>{if(o.isMesh)tris+=o.geometry.index?o.geometry.index.count/3:o.geometry.attributes.position.count/3;});
+    g.animations.forEach(a=>{acts[a.name]=mixer.clipAction(a);const b=document.createElement('button');b.textContent=a.name;b.dataset.clip=a.name;b.onclick=()=>play(a.name);ui.appendChild(b);});
+    play('Idle');const box=new THREE.Box3().setFromObject(cur);
+    info.textContent=`${name}: ${g.animations.length} clips, ${Math.round(tris)} tris, height ${(box.max.y-box.min.y).toFixed(2)}`;
+    window.__boss={name,clips:g.animations.map(a=>[a.name,+a.duration.toFixed(2)]),tris:Math.round(tris),h:+(box.max.y-box.min.y).toFixed(2)};
+  },undefined,e=>{info.textContent='load error: '+e.message;});}
+function play(n){Object.entries(acts).forEach(([k,a])=>{if(k==n){a.reset().fadeIn(.2).play();}else a.fadeOut(.2);});
+  document.querySelectorAll('[data-clip]').forEach(b=>b.className=b.dataset.clip==n?'on':'');}
+(function loop(){requestAnimationFrame(loop);mixer&&mixer.update(clock.getDelta());ctl.update();R.render(scene,cam);})();
+if(Q.get('a')){loadArena(Q.get('a'));window.__arena={name:Q.get('a')};cam.position.set(16,9,22);}
+load(Q.get('m')||'belgardin');
+</script>
+</body>
+</html>

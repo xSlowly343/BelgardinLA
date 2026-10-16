@@ -3,10 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Belgardin Cheat Sheet</title>
-<meta name="description" content="Шпаргалка по Shadow Raid Belgardin (Lost Ark): механики HP-полос обоих врат на одной картинке. RU · EN · 中文.">
+<title>Шпаргалка · Белгардин</title>
+<meta name="description" content="Шпаргалка по Shadow Raid Belgardin (Lost Ark): механики HP-полос обоих врат на одной картинке.">
 <meta name="author" content="xSlowly">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Гримуар Белгардина">
+<meta property="og:title" content="Шпаргалка · Белгардин">
+<meta property="og:description" content="Шпаргалка по Shadow Raid Belgardin (Lost Ark): механики HP-полос обоих врат на одной картинке.">
+<meta property="og:url" content="https://xslowly343.github.io/BelgardinLA/cheatsheet/">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:image" content="https://xslowly343.github.io/BelgardinLA/img/og-cheatsheet-ru.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#d4a85a">
+<link rel="alternate" hreflang="ru" href="https://xslowly343.github.io/BelgardinLA/cheatsheet/">
+<link rel="alternate" hreflang="en" href="https://xslowly343.github.io/BelgardinLA/cheatsheet/en/">
+<link rel="alternate" hreflang="zh-CN" href="https://xslowly343.github.io/BelgardinLA/cheatsheet/cn/">
+<link rel="canonical" href="https://xslowly343.github.io/BelgardinLA/cheatsheet/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Golos+Text:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -195,6 +209,9 @@ const UI={
   back:L('← К гримуару','← Back to the Grimoire','← 返回魔典'),
   fit:L('По ширине','Fit width','适应宽度'),
   full:L('1:1','1:1','1:1'),
+  link:L('Скопировать ссылку','Copy link','复制链接'),
+  copied:L('Скопировано ✓','Copied ✓','已复制 ✓'),
+  doc:L('Шпаргалка · Белгардин','Belgardin Cheat Sheet','贝尔加丁速查表'),
 };
 
 /* ---------------- GATE I ---------------- */
@@ -449,12 +466,18 @@ function render(){
   document.getElementById('bar').innerHTML=`<a href="../index.html?lang=${LG}">${tx(UI.back)}</a><span class="sp"></span>`+
     [['ru','RU'],['en','EN'],['zh','中文']].map(([l,n])=>`<button type="button" data-l="${l}" aria-pressed="${l===LG}">${n}</button>`).join('')+
     `<span class="sp"></span><button type="button" class="zm" aria-pressed="${FIT}">${tx(FIT?UI.fit:UI.full)}</button>`+
-    `<a href="belgardin-cheatsheet-${LG}.png" download>${tx(UI.save)}</a>`;
+    `<button type="button" class="cp">${tx(UI.link)}</button><a href="belgardin-cheatsheet-${LG}.png" download>${tx(UI.save)}</a>`;
+  document.title=tx(UI.doc);
+  /* share the per-language address (/cheatsheet/en/, /cn/): link previews can't read ?lang= */
+  document.querySelector('.bar .cp').onclick=e=>{const b=e.currentTarget,u=SHARE+({ru:'',en:'en/',zh:'cn/'})[LG];
+    const ok=()=>{b.textContent=tx(UI.copied);setTimeout(()=>{b.textContent=tx(UI.link);},1600);};
+    if(navigator.clipboard&&isSecureContext)navigator.clipboard.writeText(u).then(ok,()=>prompt('',u));else prompt('',u);};
   document.querySelector('.bar .zm').onclick=()=>{FIT=!FIT;try{localStorage.setItem('belg_cs_fit',FIT?'1':'0');}catch(e){}render();};
   fit();
   document.querySelectorAll('.bar button[data-l]').forEach(b=>b.onclick=()=>{LG=b.dataset.l;try{localStorage.setItem('belg_lang',LG);}catch(e){}history.replaceState(null,'','?lang='+LG);render();});
 }
 /* fit-to-width: scale the 2400px sheet down to the viewport (1:1 keeps native size with horizontal scroll) */
+const SHARE='https://xslowly343.github.io/BelgardinLA/cheatsheet/';
 let FIT=true;try{FIT=localStorage.getItem('belg_cs_fit')!=='0';}catch(e){}
 function fit(){
   const sh=document.getElementById('sheet'),k=FIT&&!document.documentElement.classList.contains('print')?Math.min(1,document.documentElement.clientWidth/2400):1;

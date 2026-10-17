@@ -586,6 +586,19 @@ function drawG(hold,prog){const key=hold+':'+(hold?Math.round(prog*60):0);if(key
   g.fillStyle='rgba(20,11,5,.92)';g.beginPath();g.arc(c,c,35,0,7);g.fill();g.lineWidth=4;g.strokeStyle='#ff8a1e';g.stroke();
   g.font='900 46px "Golos Text", "Segoe UI", sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillStyle='#ffe2b8';g.fillText('G',c,c+3);if(gTexr)gTexr.needsUpdate=true;}
 
+/* fear wave: a dark wall of shadow sweeping outwards; party members jump it (space bar) unless the sim hides them behind coffins */
+const waveR=(it,t)=>.5+(t-it.t0)/(it.t2-it.t0)*10;
+const FEAR_F='uniform vec3 uC;uniform float uA,uT;varying vec2 vUv;'+NOISE+'void main(){float y=vUv.y;float n=fbm(vec2(vUv.x*60.-uT*2.,y*3.-uT*1.5));float rim=smoothstep(.82,1.,y)*(.55+.45*n);'+
+  'float body=(1.-y*.35)*(.85+.15*n);vec3 c=mix(vec3(.012,.004,.022),uC,rim);float a=clamp(body+rim*.6,0.,1.)*smoothstep(1.,.93,y)*uA;gl_FragColor=vec4(c*(1.+rim*1.5),a);}';
+function makeFearWave(it,y){const m=new THREE.Group();
+  const wall=new THREE.Mesh(new THREE.CylinderGeometry(1,1,1.5,128,1,true),new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,vertexShader:FXV,fragmentShader:FEAR_F,
+    uniforms:{uC:{value:hdr(0x8a4dff,1.6)},uA:{value:0},uT:{value:0}}}));wall.position.y=.75;m.add(wall);
+  const floor=new THREE.Mesh(new THREE.RingGeometry(.9,1.02,128),new THREE.MeshBasicMaterial({color:0x08030d,transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide}));floor.rotation.x=-Math.PI/2;floor.position.y=y+.02;m.add(floor);
+  m.position.set(it.x,0,it.z);m.userData={wall,floor};return m;}
+/* jump height for a party member at (x,z): a hop timed so they are at the top when the wave front passes */
+function jumpH(t,x,z){let h=0;objs.forEach(({it})=>{if(it.k!='wave'||it.c!='fear'||it.nojump||t<it.t0||t>it.t2)return;
+  const d=Math.hypot(x-it.x,z-it.z)-waveR(it,t),q=d/1.3;if(Math.abs(q)<1)h=Math.max(h,1.75*(1-q*q));});return h;}
+
 /* automatic cues: every JG telegraph gets the gold swirl, every co-op counter ring the blue one */
 function autoCues(items){const out=[];items.forEach(it=>{if(it.nocue)return;
     if(it.c=='jg'&&(it.k=='sector'||it.k=='disc')){const x=it.k=='disc'?it.x:it.cx,z=it.k=='disc'?it.z:it.cz,r=it.k=='disc'?Math.min(it.r>5?3.6:it.r*1.15,4.2):3.4;
@@ -611,6 +624,7 @@ function buildSim(key){
     else if(it.k=='band'){m=new THREE.Mesh(new THREE.PlaneGeometry(it.w,it.len),tMat(it.c,{mode:1}));m.rotation.order='YXZ';m.rotation.y=-it.h*deg;m.rotation.x=-Math.PI/2;m.position.set(it.cx,y,it.cz);}
     else if(it.k=='disc'){m=new THREE.Mesh(new THREE.CircleGeometry(1,64),tele?tMat(it.c,{r0:0,r1:1}):new THREE.MeshBasicMaterial({color:COL[it.c],transparent:true,opacity:0,depthWrite:false}));m.rotation.x=-Math.PI/2;m.position.set(it.x,y,it.z);m.scale.set(it.r,it.r,1);}
     else if(it.k=='void'){m=new THREE.Mesh(it.ring?new THREE.RingGeometry(it.r0,it.r,64):new THREE.CircleGeometry(it.r,48),new THREE.MeshBasicMaterial({color:COL.void,transparent:true,opacity:0,depthWrite:false}));m.rotation.x=-Math.PI/2;m.position.set(it.x,y+.01,it.z);}
+    else if(it.k=='wave'&&it.c=='fear')m=makeFearWave(it,y);
     else if(it.k=='wave'){m=new THREE.Mesh(new THREE.RingGeometry(.85,1,64),new THREE.MeshBasicMaterial({color:COL[it.c],transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending}));m.rotation.x=-Math.PI/2;m.position.set(it.x,y+.02,it.z);}
     else if(it.k=='coffin'){const c=makeCoffin(it.red);if(it.up){m=new THREE.Group();c.scale.setScalar(it.s||.6);c.rotation.x=-Math.PI/2;c.position.y=1.45*(it.s||.6);m.add(c);}else{m=c;if(it.s)m.scale.setScalar(it.s);}m.rotation.y=-it.h*deg;m.position.set(it.x,0,it.z);}
     else if(it.k=='line'&&!it.laser){m=new THREE.Group();m.add(makeSpine(it.len,it.col));}
@@ -748,11 +762,11 @@ function apply(){
   {const BL=scene.userData.bossL,au=g2?auraB:auraA;BL.position.set(bs[0],3.4,bs[1]);BL.intensity=hid?0:1.6;au.position.set(bs[0],0,bs[1]);au.visible=!hid;}
   const hp=dir(bs[2],2.6);arrow.position.set(bs[0]+hp[0],.07,bs[1]+hp[1]);arrow.rotation.y=-bs[2]*deg;arrow.visible=!hid;
   const fly=objs.find(o=>o.it.k=='flyparty'&&t>=o.it.t0&&t<=o.it.t2);
-  if(partyReady){const P=partyAt(t),GS=guardState(t,P,B);party.forEach((p,i)=>{const [x,z]=P[i];p.position.set(x,fly?1.6+Math.sin(t*3+i)*.2:0,z);
+  if(partyReady){const P=partyAt(t),GS=guardState(t,P,B);party.forEach((p,i)=>{const [x,z]=P[i];p.position.set(x,fly?1.6+Math.sin(t*3+i)*.2:jumpH(t,x,z),z);
       const d=p.userData,dx=x-d.prev.x,dz=z-d.prev.z,mv=Math.hypot(dx,dz);d.speed=mv;
       const gs=GS[i];d.gTarget=gs?gs.w:0;
       const target=gs?Math.atan2(gs.fx-x,gs.fz-z):mv>.01?Math.atan2(dx,dz):Math.atan2(bs[0]-x,bs[1]-z);p.rotation.y=target;d.prev.set(x,0,z);
-      d.ring.material.color.setHex(i==me?0xffffff:d.col);d.ring.scale.setScalar(i==me?1.35:1);d.lab.visible=showLabels||i==me;});
+      d.ring.position.y=fly?.03:.03-p.position.y;d.ring.material.color.setHex(i==me?0xffffff:d.col);d.ring.scale.setScalar(i==me?1.35:1);d.lab.visible=showLabels||i==me;});
     // one G badge: over the chosen player if they guard, else over the first guarding one
     let gi=-1;GS.forEach((g,i)=>{if(g&&g.w>.05&&(gi<0||i==me&&gi!=me||gi!=me&&g.w>GS[gi].w+.01))gi=i;});
     if(gi>=0){const g=GS[gi],p=party[gi];drawG(g.hold,g.prog);gMark.visible=true;gMark.position.set(p.position.x,p.position.y+2.95,p.position.z);gMark.material.opacity=Math.min(1,g.w*1.6);gMark.scale.setScalar(.95+(g.hold?0:.06*Math.sin(t*14)));}else gMark.visible=false;}
@@ -767,6 +781,7 @@ function apply(){
       if(it.rk){const r=lerpKeys(it.rk,t)[0];m.scale.set(r,r,1);}}
     else if(['sector','disc','void'].includes(it.k)){let op;if(it.c=='medusa'){op=t<it.t1?.25+.5*(t-it.t0)/(it.t1-it.t0):.8*(1-(t-it.t1)/(it.t2-it.t1));}
       else if(it.c=='void'){op=it.stay?(t<it.t1?.3+.2*Math.sin(t*12):.95):Math.min(.95,(t-it.t0)*2);m.material.color.setHex(t<it.t1&&it.stay?0x2fb8c8:COL.void);}else op=.5;m.material.opacity=op;}
+    else if(it.k=='wave'&&it.c=='fear'){const u=(t-it.t0)/(it.t2-it.t0),r=waveR(it,t),a=Math.min(1,u*8)*(1-Math.max(0,u-.8)/.2);m.scale.set(r,1,r);m.userData.wall.material.uniforms.uA.value=a;m.userData.wall.material.uniforms.uT.value=t;m.userData.floor.material.opacity=.95*a;}
     else if(it.k=='wave'){const u=(t-it.t0)/(it.t2-it.t0);const r=.5+u*10;m.scale.set(r,r,1);m.material.opacity=.9*(1-u);}
     else if(it.k=='coffin'){const u=Math.min(1,(t-it.t0)/.35);m.position.y=(1-ease(u))*7;}
     else if(it.k=='line'){const h=lerpKeys(it.rot.map(r=>[r[0],r[1]]),t)[0];m.position.set(B.position.x,0,B.position.z);m.rotation.y=-h*deg;}

@@ -129,7 +129,7 @@ const P2=[
 ];
 
 /* ================= 3D ARENA ================= */
-const C={death:0xdc5841,kd:0xe4913d,stag:0xd8c35c,grab:0xa77fe4,jg:0x6ea9ff,safe:0x66d29e,medusa:0x050307,void:0x07050c,light:0xf2e6b8,lucid:0x5ccf6a,cnt:0x8fd3bf,fear:0x8a64d6,insight:0x9a5cff,curse:0x6a1a12,gold:0xe8a93a};
+const C={death:0xff3b3b,kd:0xf2cf3c,stag:0xff6fae,grab:0xa35cff,jg:0xff7414,safe:0x3fd77a,medusa:0x050307,void:0x07050c,light:0xf2e6b8,lucid:0x5ccf6a,cnt:0x3f8cff,fear:0x8a64d6,insight:0x9a5cff,curse:0x6a1a12,gold:0xe8a93a};
 const deg=Math.PI/180;
 const dir=(h,r)=>[Math.sin(h*deg)*r,-Math.cos(h*deg)*r];
 const ring8=(r,o=0)=>Array.from({length:8},(_,i)=>dir(o+i*45,r));
@@ -671,6 +671,8 @@ def('brawl2',{g:2,n:'~100 · Great Brawl',dur:6},b=>{
 });
 
 /* map patterns & timeline to sims */
+/* Holding JG: the guard is held for the whole fill (arena shows a timer ring around the G); key → t0 of that jg telegraph */
+[['holdjg',1.4],['insightblade',1.0],['frontjg',2.2],['suddenjg',.2],['pacing',1.5]].forEach(([k,t0])=>SIMS[k]&&SIMS[k].items.forEach(it=>{if(it.c=='jg'&&Math.abs(it.t0-t0)<.01)it.hold=1;}));
 const K1=['flurry','aggro5','chakram','triangle','onetwox','blades','windmill','holdjg','burst3','rise','halfmoon','backstep','openingjg','butterfly','jumprope','kaisa','inhale','medusa','nightrea','imprison','five','coffinstag','insightbare','insightblade','pizza','coffinA','vanish'];
 const K2=['agg4','orbslam','frontback','frontjg','suddenjg','rearrapid','leap','pacing','barrage','bomb4','cones2','swirl','sling','mirror','dslam','donutlaser','lattice2','wall','grind','orbjg','closegrab','launch','range','rotate'];
 P1.forEach((p,i)=>p.sim=K1[i]);P2.forEach((p,i)=>p.sim=K2[i]);

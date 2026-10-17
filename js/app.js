@@ -112,7 +112,7 @@ if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.fo
   window.__observeTL=()=>$$('.tl-item').forEach(i=>io.observe(i));}
 
 /* ================= attack lists ================= */
-const TAGN={kd:'сбитие',stag:'стаггер',grab:'захват',jg:'JG',death:'смерть',cnt:'контра',fall:'падение'};
+const TAGN={kd:'опрокидывает',stag:'отталкивает',grab:'захват',jg:'JG',death:'смерть',cnt:'контра',fall:'падение'};
 function renderList(el,list,gate){
   el.innerHTML=list.map(p=>{const th=SHOTS[p.sim]?`<img class="pth" src="img/screens/${p.sim}-1.jpg" alt="" loading="lazy">`:'';
    return `<details class="pat" data-cat="${p.c}" data-q="${esc((p.n+' '+p.ko+' '+p.t+' '+(p.dn||'')+' '+T(p.t)+' '+T(p.dn||'')).toLowerCase().replace(/<[^>]+>/g,''))}">

@@ -348,10 +348,17 @@ function init(){
   clockB=new THREE.Mesh(new THREE.CircleGeometry(10.5,64),ct2);clockB.rotation.x=-Math.PI/2;clockB.position.y=.012;scene.add(clockB);
   envA=makeEnvA();envB=makeEnvB();scene.add(envA,envB);
   bossA=makeBelgardin();bossB=makeKragma();scene.add(bossA,bossB);
-  // facing ring under the boss, as in game: head half white, back half blue
-  const fr=new THREE.Mesh(new THREE.RingGeometry(.86,1,96),new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,vertexShader:TV,
-    fragmentShader:'varying vec2 vP;void main(){vec2 d=normalize(vP);float r=length(vP);float f=smoothstep(-.18,.18,d.y);vec3 c=mix(vec3(.25,.55,1.6),vec3(1.7),f);'+
-      'float tick=smoothstep(.06,.0,abs(d.x))*step(.0,d.y);float edge=smoothstep(.86,.9,r)*smoothstep(1.,.96,r);gl_FragColor=vec4(c*(1.+tick*.8),(.35+.65*edge)*.95+tick*.3);}'}));
+  // facing marker under the boss, as in game: white front arc with a small triangle, blue back arc with a round knob, gaps at the flanks
+  const fr=new THREE.Mesh(new THREE.PlaneGeometry(2.8,2.8),new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,vertexShader:TV,
+    fragmentShader:'varying vec2 vP;'+
+      'float arc(float r,float ang){float t=clamp(ang/1.05,0.,1.);float w=.055*(1.-t*t*t)+.012;return smoothstep(w+.025,w,abs(r-1.))*step(ang,1.05);}'+
+      'void main(){vec2 p=vP;float r=length(p);float a=atan(p.x,p.y);float af=abs(a),ab=3.14159-af;'+
+      'float fA=arc(r,af),bA=arc(r,ab);'+
+      'float tri=step(.98,p.y)*smoothstep(.0,.025,(1.34-p.y)*.62-abs(p.x));'+
+      'float kd=length(p-vec2(0.,-1.02));float knob=max(smoothstep(.17,.145,kd)*smoothstep(.07,.095,kd),smoothstep(.06,.04,kd));'+
+      'float glowF=exp(-pow((r-1.)/.09,2.))*step(af,1.1)*.35,glowB=exp(-pow((r-1.)/.09,2.))*step(ab,1.1)*.35;'+
+      'float W=max(max(fA,tri),glowF),B=max(max(bA,knob),glowB);'+
+      'vec3 c=vec3(1.75)*W+vec3(.25,.6,1.9)*B;gl_FragColor=vec4(c/max(.001,max(W,B)),max(W,B));}'}));
   fr.rotation.x=-Math.PI/2;faceRing=new THREE.Group();faceRing.add(fr);fr.position.y=.06;scene.add(faceRing);
   arrow=new THREE.Group();const ac=new THREE.Mesh(new THREE.ConeGeometry(.32,.9,3),new THREE.MeshBasicMaterial({color:0xffd27a,transparent:true,opacity:.9,depthWrite:false}));ac.rotation.x=-Math.PI/2;arrow.add(ac);scene.add(arrow);
   // ash + souls
